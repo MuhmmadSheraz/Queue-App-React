@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Login from "./view/Login";
+import Company from "./view/Company";
 import Homepage from "./view/Homepage";
 import { firebase } from "./config/firebase";
 import RouterNav from "./config/router";
@@ -12,20 +13,20 @@ function App() {
   }, []);
   let userStatus = () => {
     firebase.auth().onAuthStateChanged(function (user) {
-      setLoader(false)
-      if(user){
-        setIsLoggedIn(true)
-      }
-      else{
-        setIsLoggedIn(false)
+      setLoader(false);
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
       }
     });
   };
   return (
-    <RouterNav isLoggedIn={isLoggedIn}loader={loader} >
+    <RouterNav isLoggedIn={isLoggedIn} loader={loader}>
       <div className="App">
         <Login />
         <Homepage />
+        <Company />
       </div>
     </RouterNav>
   );

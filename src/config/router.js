@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Homepage from "../view/Homepage";
 import Login from "../view/Login";
+import Company from '../view/Company'
 import '../App.css'
 
 const RouterNav = (props) => {
@@ -24,6 +25,8 @@ const RouterNav = (props) => {
           </Route>
           <Route exact path="/home" component={Homepage}>
             {authChecker(isLoggedIn, <Homepage />)}
+          </Route>
+          <Route exact path="/company" component={Company}>
           </Route>
         </Switch>
       </Router>

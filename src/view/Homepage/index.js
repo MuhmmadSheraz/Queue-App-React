@@ -3,20 +3,16 @@ import { logOut, firebase } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 
 const Homepage = () => {
-  // const history = useHistory();
+  const history = useHistory();
+  const goCompany=()=>{
+    history.push("./company")
+  }
 
-  // useEffect(() => {
-  //   userStatus();
-  // }, []);
-  // let userStatus = () => {
-  //   firebase.auth().onAuthStateChanged(function (user) {
-  //     !user ? history.push("./") : console.log("user Avaibale from Home **");
-  //   });
-  // };
+ 
   return (
     <>
       <h1> Welcome Homepage !.</h1>
-      <button>Are you Company</button>
+      <button onClick={goCompany}>Are you Company</button>
       <button> Waiting Ofr Tokens ?</button>
       <button onClick={logOut}>Logout</button>
     </>
