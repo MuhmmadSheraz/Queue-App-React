@@ -4,7 +4,8 @@ import Company from "./view/Company";
 import Homepage from "./view/Homepage";
 import { firebase } from "./config/firebase";
 import RouterNav from "./config/router";
-
+import store from "./Store/index";
+import { Provider } from "react-redux";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loader, setLoader] = useState(true);
@@ -15,6 +16,7 @@ function App() {
     firebase.auth().onAuthStateChanged(function (user) {
       setLoader(false);
       if (user) {
+     setLoader(false)
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -22,14 +24,15 @@ function App() {
     });
   };
   return (
-    <RouterNav isLoggedIn={isLoggedIn} loader={loader}>
-      <div className="App">
-        <Login />
-        <Homepage />
-        <Company />
-      </div>
-    </RouterNav>
+    <Provider store={store}>
+      <RouterNav isLoggedIn={isLoggedIn} loader={loader}>
+        <div className="App">
+          <Login />
+          <Homepage />
+          <Company />
+        </div>
+      </RouterNav>
+    </Provider>
   );
 }
-
-export default App;
+export default App

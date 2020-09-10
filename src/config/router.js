@@ -9,6 +9,7 @@ import Homepage from "../view/Homepage";
 import Login from "../view/Login";
 import Company from '../view/Company'
 import '../App.css'
+import authReducer from "../Store/rootReducer";
 
 const RouterNav = (props) => {
   const { isLoggedIn,loader } = props;

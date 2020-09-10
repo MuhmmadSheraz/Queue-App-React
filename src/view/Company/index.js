@@ -1,51 +1,53 @@
-import React, { useState } from "react";
-import { Modal ,Form ,Button} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Modal, Form, Button } from "react-bootstrap";
+import { connect } from "react-redux";
+import { addUser, removeUser } from "../../Store/actions/authAction";
+import { firebase, logOut } from "../../config/firebase";
+import { useHistory } from "react-router-dom";
 
-const Company = () => {
-  const [show, setShow] = useState(false);
-
-  const showModal = () => {
-    setShow(true);
+const Company = (props) => {
+  const history=useHistory()
+  console.log("Company Props*****", props.user);
+  useEffect(() => {
+    userStatus();
+  }, []);
+  let userStatus = () => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        const currUser = { name: user.displayName, email: user.email };
+        console.log("From Use Effect ***", currUser);
+        props.isLoggedIn(currUser);
+      } else {
+        history.push("/")
+        props.isLoggedIn(null);
+      }
+    });
   };
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const loggedOut = async () => {
+    try {
+      await logOut();
+      props.isLoggedOut()
+      console.log("Logged Out From Are Company");
+    }
+    catch(err){
+      console.log(err,"Error from My Company")
+    }
+  };
   return (
     <>
-      <Modal show={show} onHide={handleClose} animation={true}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add Company Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Name of The Company</Form.Label>
-              <Form.Control type="text" placeholder="Enter Company Name" />
-              
-            </Form.Group>
-
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Since</Form.Label>
-              <Form.Control type="number" placeholder="Since" />
-            </Form.Group>
-            <Form.Group controlId="formBasicCheckbox">
-              <Form.Check type="checkbox" label="Check me out" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <button className="btn btn success" onClick={showModal}>
-        Add Company
-      </button>
+      <h1>Name : {props.user && props.user.name}</h1>
+      <h1>Email : {props.user && props.user.email}</h1>
+      <button onClick={loggedOut}>Logged Out</button>
     </>
   );
 };
-export default Company;
+const mapStateToProps = (state) => {
+  return { user: state.user };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    isLoggedIn: (user) => dispatch(addUser(user)),
+    isLoggedOut:()=>dispatch(removeUser())
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Company);
