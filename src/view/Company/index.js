@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
 import { firebase, logOut } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
+import AddCompanyForm from "../../component/AddCompanyForm";
 import "./company.css";
-
 const Company = (props) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+  // console.log("first Consol Main",props&&props.hello.companyList)
+  let companyListArray = props && props.hello.companyList;
+  const [showForm, setShowForm] = useState(false);
   const history = useHistory();
-  console.log("Company Props*****", props.user);
+  const showFormBtn = () => {
+    if (showForm) {
+      setShowForm(false);
+    } else {
+      setShowForm(true);
+    }
+  };
   useEffect(() => {
     userStatus();
   }, []);
+
   let userStatus = () => {
     firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
+      if (user || props.user) {
         const currUser = { name: user.displayName, email: user.email };
         console.log("From Use Effect ***", currUser);
         props.isLoggedIn(currUser);
@@ -29,6 +34,7 @@ const Company = (props) => {
       }
     });
   };
+
   const loggedOut = async () => {
     try {
       await logOut();
@@ -38,55 +44,18 @@ const Company = (props) => {
       console.log(err, "Error from My Company");
     }
   };
+
   return (
     <div className="companyWrapper">
-      <div className="ModalForm">
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Company</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={e => { e.preventDefault(); }}>
-              <Form.Group controlId="formBasicEmail">
-                <Form.Label>Company Name</Form.Label>
-                <Form.Control type="text" placeholder="Name of Company" />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Label>Since</Form.Label>
-                <Form.Control type="number" placeholder="Since" />
-              </Form.Group>
-              <Form>
-                <Form.Group>
-                  <Form.File
-                    label="Certificates (Max 3 Images)"
-                  />
-                </Form.Group>
-              <Form.Group>
-                <Form.Label>Timings</Form.Label>
-                <Form.Control type="text" placeholder="Enter Timing" />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Adress</Form.Label>
-                <Form.Control type="text" placeholder="Enter Company Adress" />
-              </Form.Group>
-              </Form>
-           
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Add 
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
       <div className="companyContent">
         <h1 className="text-center mb-3">Queue App</h1>
-        <Button className="btn " onClick={handleShow}>
+        <ul>
+          {companyListArray.map((x, index) => {
+           return <li key={index}> {x.companyName}</li>;
+          })}
+        </ul>
+        {showForm ? <AddCompanyForm /> : ""}
+        <Button className="btn " onClick={showFormBtn}>
           Add Your Company +
         </Button>
       </div>
@@ -94,7 +63,8 @@ const Company = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  return { user: state.user };
+  console.log(state.companyReducer, "for  All Reducer");
+  return { user: state.user, hello: state.companyReducer };
 };
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -37,7 +37,7 @@ const Login = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  console.log("state from Component", state);
+  console.log("state from Component Login", state);
   return {
     user: state.user,
   };
