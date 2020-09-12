@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import  companyAction  from "../../Store/actions/companyAction";
+import companyAction from "../../Store/actions/companyAction";
+import {
+  addCompanyToFirebase,
+  currentUser,
+  firebase,
+} from "../../config/firebase";
 const AddCompanyForm = (props) => {
   const [companyList, setCompanyList] = useState({});
   const [show, setShow] = useState(true);
 
   const addFormData = () => {
-    console.log("companyList***", companyList);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        props.addForm(companyList);
+        addCompanyToFirebase(companyList, user.uid);
+      }
+    });
     props.addForm(companyList);
   };
 
@@ -96,7 +106,7 @@ const AddCompanyForm = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-//   console.log(state.companyReducer);
+  //   console.log(state.companyReducer);
   return {
     hello: state.companyReducer,
   };

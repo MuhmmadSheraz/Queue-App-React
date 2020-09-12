@@ -28,13 +28,35 @@ const login = () => {
   provider.setCustomParameters({
     display: "popup",
   });
-  return firebase
-    .auth()
-    .signInWithPopup(provider)
-    
+  return firebase.auth().signInWithPopup(provider);
 };
 const logOut = () => {
   return firebase.auth().signOut();
 };
 
-export { login, logOut, firebase };
+const addUserToFirebase = (uid, email, userName) => {
+  console.log("from Firebase ***", uid, email, userName);
+  firebase.firestore().collection("user").doc(uid).set({
+    userId: uid,
+    userEmail: email,
+    userName: userName,
+  });
+};
+const addCompanyToFirebase = (companyList,userId) => {
+  const obj=companyList;
+  obj["userId"]=userId
+  firebase.firestore().collection("companyList").add({
+   obj
+  }); 
+};
+const currentUser = () => {
+  return firebase.auth().onAuthStateChanged();
+};
+export {
+  login,
+  logOut,
+  addCompanyToFirebase,
+  firebase,
+  addUserToFirebase,
+  currentUser,
+};

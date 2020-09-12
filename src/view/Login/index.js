@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./login.css";
-import { login } from "../../config/firebase";
+import { login, addUserToFirebase } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 const Login = (props) => {
   const history = useHistory();
@@ -13,11 +13,14 @@ const Login = (props) => {
   let loginBtn = async () => {
     try {
       const hello = await login();
+      const uid = hello.user.uid;
       const user = {
         email: hello.additionalUserInfo.profile.email,
         name: hello.additionalUserInfo.profile.name,
       };
-
+      // console.log(user.email,user.name,"Checking***8")
+      const setUserDB = await addUserToFirebase(uid, user.email, user.name);
+      console.log("Firebase ADD DATA", setUserDB);
       props.updateUser(user);
     } catch (error) {
       console.log("catch ***", error.message);
@@ -31,7 +34,7 @@ const Login = (props) => {
         <button className="fb connect" onClick={loginBtn}>
           Facebook Login
         </button>
-          </div>
+      </div>
     </div>
   );
 };
