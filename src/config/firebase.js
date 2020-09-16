@@ -35,22 +35,47 @@ const logOut = () => {
 };
 
 const addUserToFirebase = (uid, email, userName) => {
-  console.log("from Firebase ***", uid, email, userName);
   firebase.firestore().collection("user").doc(uid).set({
     userId: uid,
     userEmail: email,
     userName: userName,
   });
 };
-const addCompanyToFirebase = (companyList,userId) => {
-  const obj=companyList;
-  obj["userId"]=userId
+const addCompanyToFirebase = (companyListInstance) => {
   firebase.firestore().collection("companyList").add({
-   obj
-  }); 
+    companyListInstance,
+  });
 };
 const currentUser = () => {
   return firebase.auth().onAuthStateChanged();
+};
+const getAllCompanies = () => {
+  return firebase.firestore().collection("companyList").get();
+};
+const getId = (param) => {
+  console.log(param);
+  return firebase
+    .firestore()
+    .collection("companyList")
+    .where("companyListInstance.companyName", "==", param)
+    .get();
+};
+const updateDailyDetails = (docId, addTokens, addTime, date) => {
+  console.log(docId);
+  firebase.firestore().collection("companyList").doc(docId).update({
+    timeTurned: addTime,
+    totalTokens:addTokens ,
+    createdOn: date,
+  });
+};
+const resetTokens = (docId) => {
+  console.log(docId);
+  firebase.firestore().collection("companyList").doc(docId).update({
+    totalTokens: 0,
+  });
+};
+const getDetails = (docID) => {
+  return firebase.firestore().collection("companyList").doc(docID).get();
 };
 export {
   login,
@@ -59,4 +84,9 @@ export {
   firebase,
   addUserToFirebase,
   currentUser,
+  getAllCompanies,
+  getId,
+  updateDailyDetails,
+  resetTokens,
+  getDetails,
 };

@@ -8,6 +8,7 @@ import {
 import Homepage from "../view/Homepage";
 import Login from "../view/Login";
 import Company from '../view/Company'
+import CompanyDetail from "../component/CompanyDetail"
 import '../App.css'
 import authReducer from "../Store/rootReducer";
 
@@ -28,6 +29,8 @@ const RouterNav = (props) => {
             {authChecker(isLoggedIn, <Homepage />)}
           </Route>
           <Route exact path="/company" component={Company}>
+          </Route>
+          <Route exact path="/company/:id" component={CompanyDetail}>
           </Route>
         </Switch>
       </Router>

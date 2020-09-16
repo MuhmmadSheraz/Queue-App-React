@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 import { logOut, firebase } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
+import {removeUser} from "../../Store/actions/authAction"
 import "./homepage.css";
 import { Button } from "react-bootstrap";
 import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
+import { companyActionNull } from "../../Store/actions/companyAction";
+
 
 const Homepage = (props) => {
   // const [mapState, setMapState] = useState();
@@ -12,6 +15,10 @@ const Homepage = (props) => {
   const history = useHistory();
   const goCompany = () => {
     history.push("./company");
+  };
+  const logoutUser = () => {
+    logOut();
+    props.loggedOutUser()
   };
 
   return (
@@ -29,20 +36,28 @@ const Homepage = (props) => {
           Are you Company
         </Button>
         <Button className="m-1"> Waiting For Tokens </Button>
-        <Button className="m-1 logoutBtn" onClick={logOut}>
+        <Button className="m-1 logoutBtn" onClick={logoutUser}>
           Logout
+        </Button>
+        <Button className="btn btn-danger " onClick={props.removeAll}>
+          Remove All Companies
         </Button>
       </div>
     </div>
   );
 };
 const mapStateToProps = (state) => {
-  console.log("state from Component", state);
+  console.log("state from Home Component", state);
   return {
     user: state.authReducer.user,
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    loggedOutUser: () => dispatch(removeUser()),
+    removeAll: () => dispatch(companyActionNull()),
+    
+
+  };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

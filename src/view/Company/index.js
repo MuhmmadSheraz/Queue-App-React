@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Row, Col, Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
-import { firebase, logOut } from "../../config/firebase";
+import { addCompaniesFromDB } from "../../Store/actions/companyAction";
+import { firebase, logOut, getAllCompanies } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 import AddCompanyForm from "../../component/AddCompanyForm";
+import { Link } from "react-router-dom";
 import "./company.css";
+
 const Company = (props) => {
-  // console.log("first Consol Main",props&&props.hello.companyList)
-  let companyListArray = props && props.hello.companyList;
+  const companyListArray = props && props.allCompanies;
+  console.log("MAP****", companyListArray);
   const [showForm, setShowForm] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const history = useHistory();
+  console.log(companyListArray);
+  const allCompaniesList = [];
+
+  const getCompanies = async () => {
+    const companies = await getAllCompanies();
+    companies.forEach((x) => {
+      allCompaniesList.push(x.data().companyListInstance);
+    });
+    props.addDataToDB(allCompaniesList);
+    console.log(allCompaniesList);
+  };
+
   const showFormBtn = () => {
     if (showForm) {
       setShowForm(false);
@@ -18,6 +34,19 @@ const Company = (props) => {
       setShowForm(true);
     }
   };
+  const showDetails = () => {
+    if (showDetail) {
+      setShowDetail(false);
+    } else {
+      setShowDetail(true);
+    }
+  };
+  useEffect(() => {
+    if (companyListArray === "") {
+      console.log("Naya Data Bheja")
+      getCompanies();
+    }
+  }, []);
   useEffect(() => {
     userStatus();
   }, []);
@@ -25,9 +54,6 @@ const Company = (props) => {
   let userStatus = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user || props.user) {
-        const currUser = { name: user.displayName, email: user.email };
-        console.log("From Use Effect ***", currUser);
-        props.isLoggedIn(currUser);
       } else {
         history.push("/");
         props.isLoggedIn(null);
@@ -35,41 +61,61 @@ const Company = (props) => {
     });
   };
 
-  const loggedOut = async () => {
-    try {
-      await logOut();
-      props.isLoggedOut();
-      console.log("Logged Out From Are Company");
-    } catch (err) {
-      console.log(err, "Error from My Company");
-    }
-  };
-
   return (
-    <div className="companyWrapper">
+    <div className="companyWrapper pb-3">
       <div className="companyContent">
-        <h1 className="text-center mb-3">Queue App</h1>
-        <ul>
-          {companyListArray.map((x, index) => {
-           return <li key={index}> {x.companyName}</li>;
-          })}
-        </ul>
+        <h1 className="text-center py-5">Queue App</h1>
+        {props.allCompanies && (
+          <Container>
+            <Row>
+              {companyListArray.map((x, index) => {
+                if (x.userId === props.user.userId) {
+                  return (
+                    <Col md="12" className="companyList" key={index}>
+                      {x.companyName}
+                      <Link to={`/company/${x.companyName}`}>
+                        <Button className="btn btn-success">Detail</Button>
+                      </Link>
+                    </Col>
+                  );
+                }
+              })}
+            </Row>
+          </Container>
+        )}
+
         {showForm ? <AddCompanyForm /> : ""}
-        <Button className="btn " onClick={showFormBtn}>
-          Add Your Company +
-        </Button>
       </div>
+      {/* {showAddBtn ? (
+            <Button
+              className="btn text-center d-flex justify-content-center"
+              onClick={showFormBtn}
+            >
+              Add Your Company +
+            </Button>
+          ) : (
+            <button className="floatBtn btn-primary" onClick={showFormBtn}>
+              +
+            </button>
+          )} */}
+      <button className="floatBtn btn-primary" onClick={showFormBtn}>
+        +
+      </button>
     </div>
   );
 };
 const mapStateToProps = (state) => {
-  console.log(state.companyReducer, "for  All Reducer");
-  return { user: state.user, hello: state.companyReducer };
+  console.log(state.companyReducer, "from Company Reducer");
+  return {
+    user: state.authReducer.user,
+    allCompanies: state.companyReducer.companyList,
+  };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     isLoggedIn: (user) => dispatch(addUser(user)),
     isLoggedOut: () => dispatch(removeUser()),
+    addDataToDB: (data) => dispatch(addCompaniesFromDB(data)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Company);

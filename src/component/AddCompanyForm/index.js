@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import companyAction from "../../Store/actions/companyAction";
+import {companyAction} from "../../Store/actions/companyAction";
 import {
   addCompanyToFirebase,
   currentUser,
@@ -12,13 +12,13 @@ const AddCompanyForm = (props) => {
   const [show, setShow] = useState(true);
 
   const addFormData = () => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        props.addForm(companyList);
-        addCompanyToFirebase(companyList, user.uid);
-      }
-    });
-    props.addForm(companyList);
+    const userId = props.currentUser.user.userId;
+    const companyListInstance = companyList;
+    companyListInstance.userId = userId;
+    props.addForm(companyListInstance);
+    addCompanyToFirebase(companyListInstance);
+    handleClose()
+    
   };
 
   const handleClose = () => setShow(false);
@@ -39,7 +39,11 @@ const AddCompanyForm = (props) => {
             <Modal.Title>Company Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Company Name</Form.Label>
                 <Form.Control
@@ -68,17 +72,29 @@ const AddCompanyForm = (props) => {
               </Form.Group>
               <Form.Group>
                 <Form.Label>Timings</Form.Label>
-                <Form.Control
-                  name="timing"
-                  onChange={(e) => {
-                    getInput(e);
-                  }}
-                  type="text"
-                  placeholder="Enter Timing"
-                />
+                <div className="d-flex">
+                  <Form.Label> From</Form.Label>
+                  <Form.Control
+                    name="timingFrom"
+                    onChange={(e) => {
+                      getInput(e);
+                    }}
+                    type="time"
+                    placeholder="Enter Timing"
+                  />
+                  <Form.Label className="my-1"> To</Form.Label>
+                  <Form.Control
+                    name="timingTo"
+                    onChange={(e) => {
+                      getInput(e);
+                    }}
+                    type="time"
+                    placeholder="Enter Timing"
+                  />
+                </div>
               </Form.Group>
               <Form.Group>
-                <Form.Label>Adress</Form.Label>
+                <Form.Label>Address</Form.Label>
                 <Form.Control
                   name="adress"
                   onChange={(e) => {
@@ -106,9 +122,10 @@ const AddCompanyForm = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  //   console.log(state.companyReducer);
+  console.log("all States from Add Company***", state);
   return {
     hello: state.companyReducer,
+    currentUser: state.authReducer,
   };
 };
 const mapDispatchToProps = (dispatch) => {

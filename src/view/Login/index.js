@@ -14,14 +14,18 @@ const Login = (props) => {
     try {
       const hello = await login();
       const uid = hello.user.uid;
-      const user = {
+      const userDetails = {
         email: hello.additionalUserInfo.profile.email,
         name: hello.additionalUserInfo.profile.name,
+        userId: uid,
       };
-      // console.log(user.email,user.name,"Checking***8")
-      const setUserDB = await addUserToFirebase(uid, user.email, user.name);
-      console.log("Firebase ADD DATA", setUserDB);
-      props.updateUser(user);
+      console.log("initial User***", userDetails);
+      const setUserDB = await addUserToFirebase(
+        uid,
+        userDetails.email,
+        userDetails.name
+      );
+      props.updateUser(userDetails);
     } catch (error) {
       console.log("catch ***", error.message);
     }
@@ -41,9 +45,6 @@ const Login = (props) => {
 
 const mapStateToProps = (state) => {
   console.log("state from Component Login", state);
-  return {
-    user: state.user,
-  };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
