@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
-import { addCompaniesFromDB } from "../../Store/actions/companyAction";
+import { addCompaniesFromDB,realTime } from "../../Store/actions/companyAction";
 import { firebase, logOut, getAllCompanies } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 import AddCompanyForm from "../../component/AddCompanyForm";
@@ -11,22 +11,39 @@ import "./company.css";
 
 const Company = (props) => {
   const companyListArray = props && props.allCompanies;
-  console.log("MAP****", companyListArray);
   const [showForm, setShowForm] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const history = useHistory();
-  console.log(companyListArray);
-  const allCompaniesList = [];
 
   const getCompanies = async () => {
     const companies = await getAllCompanies();
+    const companyList = [];
     companies.forEach((x) => {
-      allCompaniesList.push(x.data().companyListInstance);
+      companyList.push(x.data().companyListInstance);
     });
-    props.addDataToDB(allCompaniesList);
-    console.log(allCompaniesList);
+    props.addDataToDB(companyList);
   };
 
+  useEffect(() => {
+    if (companyListArray === undefined) {
+      getCompanies();
+    }
+  }, []);
+
+  useEffect(() => {
+    userStatus();
+    props.getRealData()
+  }, []);
+
+  let userStatus = () => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user || props.user) {
+      } else {
+        history.push("/");
+        props.isLoggedIn(null);
+      }
+    });
+  };
   const showFormBtn = () => {
     if (showForm) {
       setShowForm(false);
@@ -40,25 +57,6 @@ const Company = (props) => {
     } else {
       setShowDetail(true);
     }
-  };
-  useEffect(() => {
-    if (companyListArray === "") {
-      console.log("Naya Data Bheja")
-      getCompanies();
-    }
-  }, []);
-  useEffect(() => {
-    userStatus();
-  }, []);
-
-  let userStatus = () => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user || props.user) {
-      } else {
-        history.push("/");
-        props.isLoggedIn(null);
-      }
-    });
   };
 
   return (
@@ -86,18 +84,7 @@ const Company = (props) => {
 
         {showForm ? <AddCompanyForm /> : ""}
       </div>
-      {/* {showAddBtn ? (
-            <Button
-              className="btn text-center d-flex justify-content-center"
-              onClick={showFormBtn}
-            >
-              Add Your Company +
-            </Button>
-          ) : (
-            <button className="floatBtn btn-primary" onClick={showFormBtn}>
-              +
-            </button>
-          )} */}
+
       <button className="floatBtn btn-primary" onClick={showFormBtn}>
         +
       </button>
@@ -105,7 +92,6 @@ const Company = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  console.log(state.companyReducer, "from Company Reducer");
   return {
     user: state.authReducer.user,
     allCompanies: state.companyReducer.companyList,
@@ -116,6 +102,7 @@ const mapDispatchToProps = (dispatch) => {
     isLoggedIn: (user) => dispatch(addUser(user)),
     isLoggedOut: () => dispatch(removeUser()),
     addDataToDB: (data) => dispatch(addCompaniesFromDB(data)),
+    getRealData:()=>dispatch(realTime())
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Company);

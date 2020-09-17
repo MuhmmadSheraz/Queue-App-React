@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Card, Button, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { FaCoins } from "react-icons/fa";
@@ -12,6 +12,7 @@ import {
   getDetails,
 } from "../../config/firebase";
 import "./companyDetails.css";
+import { realTime } from "../../Store/actions/companyAction";
 import moment from "moment";
 
 const CompanyDeatils = (props) => {
@@ -20,27 +21,27 @@ const CompanyDeatils = (props) => {
   const { id } = useParams();
   const allCompanies = props && props.company;
   const selectedCompany = allCompanies.filter((x) => x.companyName === id);
-  console.log(selectedCompany)
   const name = selectedCompany[0].companyName;
-useEffect(() => {
-  resetToken()
-}, [])
+  useEffect(() => {
+    props.getRealData()
+    resetToken();
+  }, []);
 
   const resetToken = async () => {
     const CompanyId = await getId(name);
     const docId = CompanyId.docs[0].id;
     const data = await getDetails(docId);
     const prevDate = await data.data().createdOn;
-    if(new Date().toLocaleDateString()!==prevDate){
-      await resetTokens(docId)
+    if (new Date().toLocaleDateString() !== prevDate) {
+      await resetTokens(docId);
     }
   };
   const updateDetails = async (name) => {
-    console.log(name);
     const CompanyId = await getId(name);
     const docId = CompanyId.docs[0].id;
     let date = new Date().toLocaleDateString();
     await updateDailyDetails(docId, addTokens, addTime, date);
+    props.getRealData();
   };
   return (
     <div className="mainWrapper">
@@ -63,7 +64,7 @@ useEffect(() => {
               <div className="col2">
                 <span>Total Tokens </span>
                 <span className="ml-auto">
-                  0 <BiCoinStack />
+                {selectedCompany[0].totalTokens}<BiCoinStack />
                 </span>
               </div>
               <input
@@ -73,9 +74,6 @@ useEffect(() => {
                   setAddTokens(e.target.value);
                 }}
               />
-              {/* <button className="addTokenBtn">
-                Add Tokens <FaCoins />
-              </button> */}
 
               <input
                 placeholder="Enter Time For Each Turn"
@@ -85,7 +83,10 @@ useEffect(() => {
                 }}
               />
 
-              <button className="addTokenBtn" onClick={() => updateDetails(name)}>
+              <button
+                className="addTokenBtn"
+                onClick={() => updateDetails(name)}
+              >
                 Update
               </button>
               {/* <button className="addTokenBtn" onClick={() => resetToken(name)}>
@@ -103,4 +104,9 @@ const mapStateToProps = (state) => {
     company: state.companyReducer.companyList,
   };
 };
-export default connect(mapStateToProps, null)(CompanyDeatils);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getRealData: () => dispatch(realTime()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CompanyDeatils);

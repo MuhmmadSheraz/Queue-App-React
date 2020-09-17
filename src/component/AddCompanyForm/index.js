@@ -13,10 +13,9 @@ const AddCompanyForm = (props) => {
 
   const addFormData = () => {
     const userId = props.currentUser.user.userId;
-    const companyListInstance = companyList;
-    companyListInstance.userId = userId;
-    props.addForm(companyListInstance);
-    addCompanyToFirebase(companyListInstance);
+    companyList.userId = userId
+    props.addForm(companyList);
+    addCompanyToFirebase(companyList);
     handleClose()
     
   };
@@ -122,7 +121,6 @@ const AddCompanyForm = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  console.log("all States from Add Company***", state);
   return {
     hello: state.companyReducer,
     currentUser: state.authReducer,

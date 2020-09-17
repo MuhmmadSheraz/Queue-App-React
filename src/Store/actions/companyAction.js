@@ -1,18 +1,33 @@
+import { firebase } from "../../config/firebase";
 const companyAction = (data) => {
-  console.log("Compnay action Chala ");
   return {
     type: "GET_COMPANY_DATA",
     data: data,
   };
 };
 const addCompaniesFromDB = (data) => {
-  console.log("Compnay action Chala ");
   return {
     type: "GET_COMPANY_FROM_DB",
     data: data,
   };
 };
-
+const realTime = () => {
+  return (dispatch) => {
+    firebase
+      .firestore()
+      .collection("companyList")
+      .onSnapshot((res) => {
+        const companyList = [];
+        res.forEach((x) => {
+          companyList.push(x.data());
+        });
+        dispatch({
+          type: "LIVE_UPDATES",
+          data: companyList,
+        });
+      });
+  };
+};
 const companyActionNull = () => {
   return {
     type: "REMOVE_ALL_COMPANIES",
@@ -20,4 +35,4 @@ const companyActionNull = () => {
   };
 };
 
-export { companyAction, companyActionNull, addCompaniesFromDB };
+export { companyAction, companyActionNull, addCompaniesFromDB, realTime };
