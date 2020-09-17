@@ -16,6 +16,15 @@ const companyReducer = (state = initialState, action) => {
     case "LIVE_UPDATES": {
       return { ...state, companyList: action.data };
     }
+    case "REMOVE_COMPANY": {
+      console.log("Hello Form State");
+      return {
+        ...state,
+        companyList: state.companyList.filter(
+          (x) => x.companyName !== action.data
+        ),
+      };
+    }
     default:
       return state;
   }

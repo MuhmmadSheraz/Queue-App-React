@@ -78,6 +78,9 @@ const resetTokens = (docId) => {
 const getDetails = (docID) => {
   return firebase.firestore().collection("companyList").doc(docID).get();
 };
+const delete_company = (param) => {
+  return firebase.firestore().collection("companyList").doc(param).delete();
+};
 export {
   login,
   logOut,
@@ -90,4 +93,5 @@ export {
   updateDailyDetails,
   resetTokens,
   getDetails,
+  delete_company,
 };

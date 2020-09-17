@@ -28,6 +28,13 @@ const realTime = () => {
       });
   };
 };
+const removeCompany=(data)=>{
+  console.log("datat",data)
+  return {
+    type:"REMOVE_COMPANY",
+    data:data
+  }
+}
 const companyActionNull = () => {
   return {
     type: "REMOVE_ALL_COMPANIES",
@@ -35,4 +42,4 @@ const companyActionNull = () => {
   };
 };
 
-export { companyAction, companyActionNull, addCompaniesFromDB, realTime };
+export { companyAction, companyActionNull, addCompaniesFromDB, realTime,removeCompany };

@@ -2,8 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
-import { addCompaniesFromDB,realTime } from "../../Store/actions/companyAction";
-import { firebase, logOut, getAllCompanies } from "../../config/firebase";
+import {
+  addCompaniesFromDB,
+  realTime,
+  removeCompany,
+} from "../../Store/actions/companyAction";
+import {
+  firebase,
+  logOut,
+  getAllCompanies,
+  getId,
+  delete_company,
+} from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 import AddCompanyForm from "../../component/AddCompanyForm";
 import { Link } from "react-router-dom";
@@ -23,7 +33,12 @@ const Company = (props) => {
     });
     props.addDataToDB(companyList);
   };
-
+  const remove_Company = async (name) => {
+    console.log("Delete ID", name);
+    const CompanyId = await getId(name);
+    const docId = CompanyId.docs[0].id;
+    delete_company(docId)
+  };
   useEffect(() => {
     if (companyListArray === undefined) {
       getCompanies();
@@ -32,7 +47,7 @@ const Company = (props) => {
 
   useEffect(() => {
     userStatus();
-    props.getRealData()
+    props.getRealData();
   }, []);
 
   let userStatus = () => {
@@ -74,6 +89,12 @@ const Company = (props) => {
                       <Link to={`/company/${x.companyName}`}>
                         <Button className="btn btn-success">Detail</Button>
                       </Link>
+                      <Button
+                        className="btn btn-danger"
+                        onClick={() => remove_Company(x.companyName)}
+                      >
+                        X
+                      </Button>
                     </Col>
                   );
                 }
@@ -102,7 +123,8 @@ const mapDispatchToProps = (dispatch) => {
     isLoggedIn: (user) => dispatch(addUser(user)),
     isLoggedOut: () => dispatch(removeUser()),
     addDataToDB: (data) => dispatch(addCompaniesFromDB(data)),
-    getRealData:()=>dispatch(realTime())
+    getRealData: () => dispatch(realTime()),
+    deleteCompany: (data) => dispatch(removeCompany(data)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Company);
