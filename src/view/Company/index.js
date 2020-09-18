@@ -37,7 +37,7 @@ const Company = (props) => {
     console.log("Delete ID", name);
     const CompanyId = await getId(name);
     const docId = CompanyId.docs[0].id;
-    delete_company(docId)
+    delete_company(docId);
   };
   useEffect(() => {
     if (companyListArray === undefined) {
@@ -75,9 +75,13 @@ const Company = (props) => {
   };
 
   return (
-    <div className="companyWrapper pb-3">
-      <div className="companyContent">
-        <h1 className="text-center py-5">Queue App</h1>
+    <div className="companyWrapper">
+      <div className="companyContent text-dark hello">
+        <span className="pt-5">
+          <h1 className="text-center text-dark py-5 heading">Queue App</h1>
+          <h1 className="text-center compheading">*** Add Company ***</h1>
+        </span>
+
         {props.allCompanies && (
           <Container>
             <Row>
@@ -86,15 +90,22 @@ const Company = (props) => {
                   return (
                     <Col md="12" className="companyList" key={index}>
                       {x.companyName}
-                      <Link to={`/company/${x.companyName}`}>
-                        <Button className="btn btn-success">Detail</Button>
-                      </Link>
-                      <Button
-                        className="btn btn-danger"
+                      <span className="allBtns">
+                        <Link to={`/company/${x.companyName}`}>
+                          <Button
+                            variant="btn btn-outline-success"
+                            className="detailBtn"
+                          >
+                            Detail
+                          </Button>
+                        </Link>
+                      </span>
+                      <button
+                        className="delBtn float-right"
                         onClick={() => remove_Company(x.companyName)}
                       >
                         X
-                      </Button>
+                      </button>
                     </Col>
                   );
                 }

@@ -1,18 +1,52 @@
 .homeWrapper {
-  background-color: #213769;
-      height: 100vh;
+  height: 100vh;
   width: 100%;
-  color: white;
-  clip-path: polygon(0 11%, 100% 0, 100% 87%, 0 95%, 0 66%);
+  color: #4884dc;
 }
-.contentWrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+
 .logoutBtn:hover {
-    background-color: #ff3548 !important;
-    outline: none !important;
-    border: none;
+  background-color: #ff3548 !important;
+  outline: none !important;
+  border: 0px;
+  color: white !important;
+}
+.headingMain {
+  font-family: "Rubik", sans-serif;
+  font-size: 70px;
+  letter-spacing: 8px;
+  font-weight: bold;
+}
+.img {
+  height: 400px;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+}
+.name {
+  color: #4884dc !important;
+}
+.img_wrapper,
+.home_content_wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.waitingBtn:hover {
+  background-color: #fec979 !important;
+  outline: none !important;
+  border: none;
+  color: white !important;
+}
+.companyBtn:hover {
+  background-color: #5697fe !important;
+  outline: none !important;
+  border: none;
+  color: white !important;
+}
+@media(max-width:575px){
+  .img_wrapper{
+    display: none;
+  }
 }

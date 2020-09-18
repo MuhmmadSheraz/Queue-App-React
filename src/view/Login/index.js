@@ -33,11 +33,13 @@ const Login = (props) => {
 
   return (
     <div className="loginWrapper">
-      <div className="login">
-        <p className="heading">Queue App</p>
-        <button className="fb connect" onClick={loginBtn}>
-          Facebook Login
-        </button>
+      <div className="overlay">
+        <div className="login">
+          <p className="heading">Queue App</p>
+          <button className="fb connect" onClick={loginBtn}>
+            Facebook Login
+          </button>
+        </div>
       </div>
     </div>
   );

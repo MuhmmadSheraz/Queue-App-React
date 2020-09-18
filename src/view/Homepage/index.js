@@ -1,48 +1,73 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import useWebAnimations, {
+  bounceInLeft,
+  backInDown,
+  shakeY,
+  bounceIn,
+  bounceInDown,
+} from "@wellyshen/use-web-animations";
 import { logOut, firebase } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
-import {removeUser} from "../../Store/actions/authAction"
+import { removeUser } from "../../Store/actions/authAction";
 import "./homepage.css";
-import { Button } from "react-bootstrap";
+import { Button, Row, Col, Container } from "react-bootstrap";
 import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
 import { companyActionNull } from "../../Store/actions/companyAction";
-
+import peopleQueue from "../../assets/peopleWaiting.jpg";
 
 const Homepage = (props) => {
-  // const [mapState, setMapState] = useState();
-  console.log(props.user && props.user.name);
+  const { ref3 } = useWebAnimations({ ...bounceInLeft });
+  const { ref } = useWebAnimations({ ...bounceInDown });
+  // const ref = useRef(ref3,ref2);
+
   const history = useHistory();
   const goCompany = () => {
     history.push("./company");
   };
   const logoutUser = () => {
     logOut();
-    props.loggedOutUser()
+    props.loggedOutUser();
   };
 
   return (
     <div className="homeWrapper">
-      <div className="contentWrapper">
-        <MyMapComponent
-          isMarkerShown
-          googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-          loadingElement={<div style={{ height: `100%` }} />}
-          containerElement={<div style={{ height: `400px` }} />}
-          mapElement={<div style={{ height: `100%` }} />}
-        />
-        <h1 className="text-center">Welcome {props.user && props.user.name}</h1>
-        <Button className="m-1" onClick={goCompany}>
-          Are you Company
-        </Button>
-        <Button className="m-1"> Waiting For Tokens </Button>
-        <Button className="m-1 logoutBtn" onClick={logoutUser}>
-          Logout
-        </Button>
-        <Button className="btn btn-danger " onClick={props.removeAll}>
-          Remove All Companies
-        </Button>
-      </div>
+      <Row className="m-0">
+        <Col sm="6">
+          <div className="home_content_wrapper">
+            <div>
+              <p ref={ref} className="headingMain">
+                Queue App
+              </p>
+              <h4 className=" mb-2 name target" ref={ref}>
+                Welcome {props.user && props.user.name}
+              </h4>
+              <Button
+                variant="outline-primary"
+                className="m-1  companyBtn"
+                onClick={goCompany}
+              >
+                Are you Company
+              </Button>
+              <Button variant="outline-primary" className="m-1  waitingBtn">
+                Waiting For Tokens{" "}
+              </Button>
+              <Button
+                variant="outline-primary"
+                className="m-1  logoutBtn"
+                onClick={logoutUser}
+              >
+                Logout
+              </Button>
+            </div>
+          </div>
+        </Col>
+        <Col sm="6" className="p-0 m-0">
+          <div className="img_wrapper target mx-2" >
+            <img className="img" src={peopleQueue} />
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 };
@@ -56,8 +81,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     loggedOutUser: () => dispatch(removeUser()),
     removeAll: () => dispatch(companyActionNull()),
-    
-
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

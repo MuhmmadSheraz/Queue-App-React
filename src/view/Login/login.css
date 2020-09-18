@@ -1,20 +1,32 @@
 .loginWrapper {
   min-height: 100vh;
-  width: 100%;
-  background-color: #213769;
+  min-width: 100%;
+  background-position: center;
+  background-size: cover;
+  background-image: url("../../assets/26199.jpg");
+  position: relative;
+    font-family: 'Rubik', sans-serif;
+
+
 }
-
+.overlay{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3)
+}
 .login {
-  text-align: center;
-
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  text-align: center;
 }
 .heading {
   text-align: center;
-  font-size: 45px;
+  font-size: 70px;
   font-weight: bolder;
   color: #ffff;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);

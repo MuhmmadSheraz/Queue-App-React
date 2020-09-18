@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Card, Button, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { FaCoins } from "react-icons/fa";
-import { BiTimer } from "react-icons/bi";
+import { BiTimer, BiInfinite } from "react-icons/bi";
 import { BiCoinStack } from "react-icons/bi";
 import { connect } from "react-redux";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../../config/firebase";
 import "./companyDetails.css";
 import { realTime } from "../../Store/actions/companyAction";
-import moment from "moment";
+import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
 
 const CompanyDeatils = (props) => {
   const [addTokens, setAddTokens] = useState("");
@@ -23,7 +23,7 @@ const CompanyDeatils = (props) => {
   const selectedCompany = allCompanies.filter((x) => x.companyName === id);
   const name = selectedCompany[0].companyName;
   useEffect(() => {
-    props.getRealData()
+    props.getRealData();
     resetToken();
   }, []);
 
@@ -43,8 +43,23 @@ const CompanyDeatils = (props) => {
     await updateDailyDetails(docId, addTokens, addTime, date);
     props.getRealData();
   };
+  const { keyframes, timing } = shakeY;
+  const { ref } = useWebAnimations({
+    keyframes,
+    timing: {
+      ...timing,
+      delay: 500, // Delay 1s,
+      iterations: Infinity,
+      duration: timing.duration *10.75, // Speed up the animation
+    },
+  });
   return (
     <div className="mainWrapper">
+      <span className="pt-5">
+        <h1 className="text-center  py-5 heading target" ref={ref}>
+          Queue App
+        </h1>
+      </span>
       <div className="detailWrapper">
         <div className="cardWrapper">
           <Row>
@@ -64,7 +79,8 @@ const CompanyDeatils = (props) => {
               <div className="col2">
                 <span>Total Tokens </span>
                 <span className="ml-auto">
-                {selectedCompany[0].totalTokens}<BiCoinStack />
+                  {selectedCompany[0].totalTokens}
+                  <BiCoinStack />
                 </span>
               </div>
               <input

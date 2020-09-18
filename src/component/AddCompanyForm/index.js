@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import {companyAction} from "../../Store/actions/companyAction";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+
+import { companyAction } from "../../Store/actions/companyAction";
+import SweetAlert from "sweetalert2-react";
+
 import {
   addCompanyToFirebase,
   currentUser,
@@ -12,12 +16,21 @@ const AddCompanyForm = (props) => {
   const [show, setShow] = useState(true);
 
   const addFormData = () => {
+    console.log(companyList);
+    if (
+      !companyList.hasOwnProperty("companyName") ||
+      !companyList.hasOwnProperty("since") ||
+      !companyList.hasOwnProperty("timingFrom") ||
+      !companyList.hasOwnProperty("timingTo")||
+      !companyList.hasOwnProperty("adress")
+    ) {
+      return Swal.fire("Oops...", "Please Fill All The Fields!", "warning");
+    }
     const userId = props.currentUser.user.userId;
-    companyList.userId = userId
+    companyList.userId = userId;
     props.addForm(companyList);
     addCompanyToFirebase(companyList);
-    handleClose()
-    
+    handleClose();
   };
 
   const handleClose = () => setShow(false);
@@ -47,6 +60,7 @@ const AddCompanyForm = (props) => {
                 <Form.Label>Company Name</Form.Label>
                 <Form.Control
                   name="companyName"
+                  required="required"
                   onChange={(e) => {
                     getInput(e);
                   }}
