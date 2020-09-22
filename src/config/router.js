@@ -10,6 +10,7 @@ import Login from "../view/Login";
 import Company from "../view/Company";
 import CompanyDetail from "../component/CompanyDetail";
 import GetAllCompanies from "../view/GetAllCompanies/index.js" 
+import GetTokens from "../component/GetTokens/index"
 import "../App.css";
 import authReducer from "../Store/rootReducer";
 
@@ -35,6 +36,7 @@ const RouterNav = (props) => {
           <Route exact path="/company" component={Company}></Route>
           <Route exact path="/company/:id" component={CompanyDetail}></Route>
           <Route exact path="/GetAllCompanies" component={GetAllCompanies}></Route>
+          <Route exact path="/GetAllCompanies/:slug" component={GetTokens}></Route>
         </Switch>
       </Router>
     </>

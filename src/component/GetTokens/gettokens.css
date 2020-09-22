@@ -1,0 +1,77 @@
+.custom-shape-divider-top-1600808309 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  background-color: #4884dc;
+min-height: 100vh;
+padding-bottom: 20px;
+}
+
+.custom-shape-divider-top-1600808309 svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 59px;
+}
+
+.custom-shape-divider-top-1600808309 .shape-fill {
+  fill: #FFFFFF;
+}
+.heading {
+  font-family: "Rubik", sans-serif;
+
+  font-size: 75px;
+}
+.card {
+  height: 550px;
+  border: 0px;
+  width: 350px;
+  border-radius: 20px;
+}
+.cardWrapperTokens {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cardHeader {
+  border-radius: 20px 20px 0px 0px;
+  height: 100px;
+  background-color: #213769;
+}
+.profileImg {
+  height: 100px;
+  width: 100px;
+
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -10%);
+}
+.profileImg img {
+  height: inherit;
+  width: inherit;
+}
+.tokensDetails {
+  display: flex;
+  justify-content: space-around;
+}
+.currentTokens h4,
+.totalTokens h4 {
+  font-weight: bold;
+  color:#4884dc
+
+}
+.currentTokens h4{
+color: #fec979 !important;
+}
+.companyDetails{
+  text-align:left;
+  margin-left: 15px;
+}
+.custom-shape-divider-top-1600777182 svg{
+  height: 20px;
+}
