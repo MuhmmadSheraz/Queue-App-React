@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./getllcompanies.css";
 import {
   Container,
@@ -8,8 +8,44 @@ import {
   Col,
   Button,
 } from "react-bootstrap";
+import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
+import { connect } from "react-redux";
 
-const GetAllCompanies = () => {
+const GetAllCompanies = (props) => {
+  const [companies, setCompanies] = useState([]);
+  useEffect(() => {
+    setCompanies(props.getCompanyList.companyList);
+    console.log(companies);
+  }, []);
+  const { ref: heading } = useWebAnimations({
+    ...shakeY,
+    timing: {
+      delay: 500,
+      duration: 1000 * 20,
+      iterations: Infinity,
+    },
+  });
+  const searchCompany = (e) => {
+    const entry = e.target.value;
+    if (e.key === "Enter") {
+      if (entry == "") {
+          return setCompanies(props.getCompanyList.companyList);
+        }
+      setCompanies((prev) => {
+        return prev.filter((x) => x.companyName == entry);
+      });
+    }
+    // if(e.key==="Enter")
+    // if (entry == "") {
+    //   return setCompanies(props.getCompanyList.companyList);
+    // } else if(entry != "") {
+    //   setCompanies((prev) => {
+    //      return prev.filter((x) => x.companyName == entry);
+    //     });
+    //     //  setCompanies(props.getCompanyList.companyList);
+    // }
+    // console.log(companies);
+  };
   return (
     <div className="custom-shape-divider-top-1600696096">
       <div class="custom-shape-divider-top-1600777182">
@@ -25,7 +61,12 @@ const GetAllCompanies = () => {
           ></path>
         </svg>
         <Container>
-          <p className="text-center text-light pt-5 display-3">Queue App </p>
+          <p
+            className="text-center text-light  display-3 heading"
+            ref={heading}
+          >
+            Queue App
+          </p>
           <div className="text-center serachWrapper">
             <InputGroup className="mb-3 w-50 searchBar">
               <FormControl
@@ -33,6 +74,7 @@ const GetAllCompanies = () => {
                 aria-label="Default"
                 aria-describedby="inputGroup-sizing-default"
                 placeholder="Search Company"
+                onKeyDown={searchCompany}
               />
             </InputGroup>
           </div>
@@ -40,48 +82,17 @@ const GetAllCompanies = () => {
         <div className="content">
           <Row>
             <Container>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
-              <Col md="12">
-                <div className="columnMain">
-                  Hello World
-                    <Button>Get Tokens</Button>
-                </div>
-              </Col>
+              {companies &&
+                companies.map((x) => {
+                  return (
+                    <Col md="12">
+                      <div className="columnMain">
+                        {x.companyName}
+                        <Button>Get Tokens</Button>
+                      </div>
+                    </Col>
+                  );
+                })}
             </Container>
           </Row>
         </div>
@@ -89,4 +100,9 @@ const GetAllCompanies = () => {
     </div>
   );
 };
-export default GetAllCompanies;
+const mapSateToProps = (state) => {
+  return {
+    getCompanyList: state.companyReducer,
+  };
+};
+export default connect(mapSateToProps, null)(GetAllCompanies);

@@ -1,5 +1,5 @@
 .homeWrapper {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   color: #4884dc;
 }
@@ -17,7 +17,7 @@
   font-weight: bold;
 }
 .img {
-  height: 400px;
+  height: 300px;
   width: 100%;
   background-position: center;
   background-size: cover;
@@ -27,7 +27,7 @@
 }
 .img_wrapper,
 .home_content_wrapper {
-  height: 100vh;
+  height:98vh;
   display: flex;
   justify-content: center;
   align-items: center;

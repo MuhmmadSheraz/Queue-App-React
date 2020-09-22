@@ -1,11 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import useWebAnimations, {
-  bounceInLeft,
-  backInDown,
-  shakeY,
-  bounceIn,
-  bounceInDown,
-} from "@wellyshen/use-web-animations";
+
 import { logOut, firebase } from "../../config/firebase";
 import { useHistory } from "react-router-dom";
 import { removeUser } from "../../Store/actions/authAction";
@@ -15,20 +9,41 @@ import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
 import { companyActionNull } from "../../Store/actions/companyAction";
 import peopleQueue from "../../assets/peopleWaiting.jpg";
+import useWebAnimations, { shakeY,wobble,backInDown } from "@wellyshen/use-web-animations";
 
 const Homepage = (props) => {
-  const { ref3 } = useWebAnimations({ ...bounceInLeft });
-  const { ref } = useWebAnimations({ ...bounceInDown });
+  const { ref: heading } = useWebAnimations({
+    ...wobble,
+    timing: {
+      duration: 1000 *2,
+      iterations: 1,
+     
+    },
+  });
+  const { ref: username } = useWebAnimations({
+    ...backInDown,
+    timing: {
+      duration: 1000 *1,
+      iterations: 1,
+     
+    },
+  });
+  const { ref: image } = useWebAnimations({
+    ...shakeY,
+    timing: {
+      duration: 1000 *20,
+      iterations: Infinity,
+    },
+  });
   // const ref = useRef(ref3,ref2);
 
   const history = useHistory();
   const goCompany = () => {
     history.push("./company");
   };
-  const allCompanies=()=>{
+  const allCompanies = () => {
     history.push("./GetAllCompanies");
-
-  }
+  };
   const logoutUser = () => {
     logOut();
     props.loggedOutUser();
@@ -40,10 +55,10 @@ const Homepage = (props) => {
         <Col sm="6">
           <div className="home_content_wrapper">
             <div>
-              <p ref={ref} className="headingMain">
+              <p ref={heading} className="headingMain">
                 Queue App
               </p>
-              <h4 className=" mb-2 name target" ref={ref}>
+              <h4 className=" mb-2 name target" ref={username}>
                 Welcome {props.user && props.user.name}
               </h4>
 
@@ -54,8 +69,12 @@ const Homepage = (props) => {
               >
                 Are you Company
               </Button>
-              <Button variant="outline-primary" className="m-1  waitingBtn" onClick={allCompanies}>
-                Waiting For Tokens 
+              <Button
+                variant="outline-primary"
+                className="m-1  waitingBtn"
+                onClick={allCompanies}
+              >
+                Waiting For Tokens
               </Button>
               <Button
                 variant="outline-primary"
@@ -68,8 +87,8 @@ const Homepage = (props) => {
             </div>
           </div>
         </Col>
-        <Col sm="6" className="p-0 m-0">
-          <div className="img_wrapper target mx-2">
+        <Col sm="6" className="">
+          <div className="img_wrapper target mx-2"ref={image}>
             <img className="img" src={peopleQueue} />
           </div>
         </Col>
