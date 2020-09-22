@@ -1,0 +1,89 @@
+.companyWrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.companyContent {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  width: 75%;
+  font-size: 25px;
+}
+
+.companyList {
+  color: black;
+  margin: 5px;
+  background-color: white;
+  border: 1px solid #007bff;
+  padding: 10px 15px;
+}
+
+.floatBtn {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  color: #fff;
+  font-size: 20px;
+  outline: none !important;
+  border-radius: 50px;
+  text-align: center;
+}
+.delBtn {
+  margin-right: -100px;
+  color: #c9302c;
+  opacity: 0;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: white;
+  border: 0px;
+  outline: none !important;
+}
+.delBtn:hover {
+  cursor: pointer;
+}
+.heading {
+  color: #4884dc !important;
+  font-size: 75px;
+}
+.companyList:hover .delBtn {
+  opacity: 1;
+}
+.allBtns {
+  float: right !important;
+}
+@media (max-width: 539px) {
+  .heading {
+    font-size: 60px;
+  }
+}
+@media (max-width: 516px) {
+  .compheading {
+    font-size: 35px;
+  }
+}
+@media (max-width: 432px) {
+  .heading {
+    font-size: 50px;
+  }
+  .compheading {
+    font-size: 25px;
+  }
+}
+@media (max-width: 370px) {
+  .heading {
+    font-size: 40px;
+  }
+  .compheading {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 280px) {
+  .heading {
+    font-size: 38px;
+  }
+}

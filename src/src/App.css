@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: 'Rubik', sans-serif;
+}
+.App-header {
+  min-height: 100vh;
+}
+.loader {
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+}
