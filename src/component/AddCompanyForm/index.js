@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import "./addcompanyform.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-
+import MyMapComponent from "../Map/index";
 import { companyAction } from "../../Store/actions/companyAction";
 import SweetAlert from "sweetalert2-react";
 
@@ -10,26 +11,46 @@ import {
   addCompanyToFirebase,
   currentUser,
   firebase,
+  storage,
 } from "../../config/firebase";
 const AddCompanyForm = (props) => {
   const [companyList, setCompanyList] = useState({});
+
   const [show, setShow] = useState(true);
+  const [getMapData, setMapData] = useState([]);
+  const [marker, setMarker] = useState({ lat: 25.1933895, lng: 66.5949635 });
+  const [addressList, setAddressList] = useState(false);
+  const getArea = (area) => {
+    console.log("area", area);
+    const a = area.response.venues;
+    console.log("parent", a);
+    setMarker(
+      a.length > 0 && { lat: a[0].location.lat, lng: a[0].location.lng }
+    );
+    console.log(marker);
+    setMapData(a);
+    {
+      a.length > 0 && setAddressList(true);
+    }
+    console.log(getMapData, "State");
+  };
 
   const addFormData = () => {
-    console.log(companyList);
+    let ref = firebase.firestore().collection("companyList").doc();
+    const id = ref.id;
     if (
       !companyList.hasOwnProperty("companyName") ||
       !companyList.hasOwnProperty("since") ||
       !companyList.hasOwnProperty("timingFrom") ||
-      !companyList.hasOwnProperty("timingTo")||
-      !companyList.hasOwnProperty("adress")
+      !companyList.hasOwnProperty("timingTo") ||
+      !companyList.hasOwnProperty("address")
     ) {
       return Swal.fire("Oops...", "Please Fill All The Fields!", "warning");
     }
     const userId = props.currentUser.user.userId;
     companyList.userId = userId;
-    props.addForm(companyList);
-    addCompanyToFirebase(companyList);
+    props.addForm((companyList.compId = id));
+    addCompanyToFirebase(companyList, id);
     handleClose();
   };
 
@@ -43,6 +64,7 @@ const AddCompanyForm = (props) => {
       };
     });
   };
+
   return (
     <div>
       {show ? (
@@ -108,15 +130,34 @@ const AddCompanyForm = (props) => {
               </Form.Group>
               <Form.Group>
                 <Form.Label>Address</Form.Label>
-                <Form.Control
-                  name="adress"
-                  onChange={(e) => {
-                    getInput(e);
-                  }}
-                  type="text"
-                  placeholder="Enter Company Adress"
+
+                <MyMapComponent
+                  hello={getArea}
+                  marker={marker}
+                  isMarkerShown
+                  googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                  loadingElement={<div style={{ height: `100%` }} />}
+                  containerElement={<div style={{ height: `400px` }} />}
+                  mapElement={<div style={{ height: `100%` }} />}
                 />
               </Form.Group>
+              {addressList && (
+                <Form.Group controlId="exampleForm.SelectCustom">
+                  <Form.Label>Select Your Area</Form.Label>
+                  <Form.Control
+                    name="address"
+                    as="select"
+                    custom
+                    onChange={(e) => {
+                      getInput(e);
+                    }}
+                  >
+                    {getMapData.map((x) => {
+                      return <option>{x.name}</option>;
+                    })}
+                  </Form.Control>
+                </Form.Group>
+              )}
             </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -135,6 +176,7 @@ const AddCompanyForm = (props) => {
   );
 };
 const mapStateToProps = (state) => {
+  console.log("state from add form",state)
   return {
     hello: state.companyReducer,
     currentUser: state.authReducer,

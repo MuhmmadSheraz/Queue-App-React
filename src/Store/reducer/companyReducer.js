@@ -21,7 +21,7 @@ const companyReducer = (state = initialState, action) => {
       return {
         ...state,
         companyList: state.companyList.filter(
-          (x) => x.companyName !== action.data
+          (x) => x.companyId !== action.data
         ),
       };
     }

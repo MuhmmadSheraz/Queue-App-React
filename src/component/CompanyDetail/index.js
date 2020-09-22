@@ -20,7 +20,9 @@ const CompanyDeatils = (props) => {
   const [addTime, setTime] = useState("");
   const { id } = useParams();
   const allCompanies = props && props.company;
-  const selectedCompany = allCompanies.filter((x) => x.companyName === id);
+  console.log(allCompanies)
+  const selectedCompany = allCompanies.filter((x) => x.companyId === id);
+  console.log(selectedCompany)
   const name = selectedCompany[0].companyName;
   useEffect(() => {
     props.getRealData();
@@ -66,7 +68,7 @@ const CompanyDeatils = (props) => {
             <Col md="6" className="col">
               <div className="contentWrapper">
                 <p className="my-1">Name : {selectedCompany[0].companyName}</p>
-                <p className="my-1">Address : 455y </p>
+                <p className="my-1">Address : {selectedCompany[0].address} </p>
                 <p className="my-1">Since : {selectedCompany[0].since}</p>
                 <p className="my-1">
                   Timing : {selectedCompany[0].timingFrom} AM to{" "}
@@ -116,6 +118,7 @@ const CompanyDeatils = (props) => {
   );
 };
 const mapStateToProps = (state) => {
+  console.log("state from companyDetails",state)
   return {
     company: state.companyReducer.companyList,
   };

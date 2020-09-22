@@ -19,7 +19,9 @@ import AddCompanyForm from "../../component/AddCompanyForm";
 import { Link } from "react-router-dom";
 import "./company.css";
 
-const Company = (props) => {
+const Company = (props,getMap) => {
+  console.log(props,"kil")
+  console.log(props.a)
   const companyListArray = props && props.allCompanies;
   const [showForm, setShowForm] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
@@ -29,7 +31,7 @@ const Company = (props) => {
     const companies = await getAllCompanies();
     const companyList = [];
     companies.forEach((x) => {
-      companyList.push(x.data().companyListInstance);
+      companyList.push(x.data());
     });
     props.addDataToDB(companyList);
   };
@@ -40,9 +42,10 @@ const Company = (props) => {
     delete_company(docId);
   };
   useEffect(() => {
+    console.log(companyListArray);
     if (companyListArray === undefined) {
       getCompanies();
-    }
+      }
   }, []);
 
   useEffect(() => {
@@ -91,7 +94,7 @@ const Company = (props) => {
                     <Col md="12" className="companyList" key={index}>
                       {x.companyName}
                       <span className="allBtns">
-                        <Link to={`/company/${x.companyName}`}>
+                        <Link to={`/company/${x.companyId}`}>
                           <Button
                             variant="btn btn-outline-success"
                             className="detailBtn"
@@ -102,7 +105,7 @@ const Company = (props) => {
                       </span>
                       <button
                         className="delBtn float-right"
-                        onClick={() => remove_Company(x.companyName)}
+                        onClick={() => remove_Company(x.companyId)}
                       >
                         X
                       </button>
@@ -124,6 +127,7 @@ const Company = (props) => {
   );
 };
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
     user: state.authReducer.user,
     allCompanies: state.companyReducer.companyList,

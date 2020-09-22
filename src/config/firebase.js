@@ -20,6 +20,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
 
 const login = () => {
   const provider = new firebase.auth.FacebookAuthProvider();
@@ -41,13 +42,15 @@ const addUserToFirebase = (uid, email, userName) => {
     userName: userName,
   });
 };
-const addCompanyToFirebase = (companyListInstance) => {
+const addCompanyToFirebase = (companyListInstance,id) => {
   firebase.firestore().collection("companyList").add({
     companyName: companyListInstance.companyName,
     userId: companyListInstance.userId,
     since: companyListInstance.since,
     timingFrom: companyListInstance.timingFrom,
     timingTo: companyListInstance.timingTo,
+    companyId:id,
+    address:companyListInstance.address
   });
 };
 const currentUser = () => {
@@ -63,6 +66,9 @@ const getId = (param) => {
     .where("companyName", "==", param)
     .get();
 };
+// const getCompId=(param)=>{
+//   firebase.firestore().collection("companyList").doc(param)
+// }
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
   firebase.firestore().collection("companyList").doc(docId).update({
     timeTurned: addTime,
@@ -94,4 +100,5 @@ export {
   resetTokens,
   getDetails,
   delete_company,
+  storage,
 };

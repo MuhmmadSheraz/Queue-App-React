@@ -25,6 +25,10 @@ const Homepage = (props) => {
   const goCompany = () => {
     history.push("./company");
   };
+  const allCompanies=()=>{
+    history.push("./GetAllCompanies");
+
+  }
   const logoutUser = () => {
     logOut();
     props.loggedOutUser();
@@ -42,6 +46,7 @@ const Homepage = (props) => {
               <h4 className=" mb-2 name target" ref={ref}>
                 Welcome {props.user && props.user.name}
               </h4>
+
               <Button
                 variant="outline-primary"
                 className="m-1  companyBtn"
@@ -49,8 +54,8 @@ const Homepage = (props) => {
               >
                 Are you Company
               </Button>
-              <Button variant="outline-primary" className="m-1  waitingBtn">
-                Waiting For Tokens{" "}
+              <Button variant="outline-primary" className="m-1  waitingBtn" onClick={allCompanies}>
+                Waiting For Tokens 
               </Button>
               <Button
                 variant="outline-primary"
@@ -59,11 +64,12 @@ const Homepage = (props) => {
               >
                 Logout
               </Button>
+              {/* <button onClick={props.removeAll()}>Remove All</button> */}
             </div>
           </div>
         </Col>
         <Col sm="6" className="p-0 m-0">
-          <div className="img_wrapper target mx-2" >
+          <div className="img_wrapper target mx-2">
             <img className="img" src={peopleQueue} />
           </div>
         </Col>
