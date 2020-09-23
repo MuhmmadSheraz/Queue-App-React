@@ -3,7 +3,7 @@ import "./addcompanyform.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import MyMapComponent from "../Map/index";
+import {MyMapComponent} from "../Map/index";
 import { companyAction } from "../../Store/actions/companyAction";
 import SweetAlert from "sweetalert2-react";
 
@@ -21,18 +21,14 @@ const AddCompanyForm = (props) => {
   const [marker, setMarker] = useState({ lat: 25.1933895, lng: 66.5949635 });
   const [addressList, setAddressList] = useState(false);
   const getArea = (area) => {
-    console.log("area", area);
     const a = area.response.venues;
-    console.log("parent", a);
     setMarker(
       a.length > 0 && { lat: a[0].location.lat, lng: a[0].location.lng }
     );
-    console.log(marker);
     setMapData(a);
     {
       a.length > 0 && setAddressList(true);
     }
-    console.log(getMapData, "State");
   };
 
   const addFormData = () => {

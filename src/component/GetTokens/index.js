@@ -5,27 +5,19 @@ import { BiMap } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 import { realTime } from "../../Store/actions/companyAction";
 import { connect } from "react-redux";
+import { MyMapComponents } from "../../component/Map/index";
 
-// import { getCompanyData } from "../../config/firebase";
 const GetTokens = (props) => {
-  // const [selectedCompany, setselectedCompany] = useState("");
+  const [showMap, setShowMap] = useState(false);
   const { slug } = useParams();
   const company = props && props.company;
   const selectedCompany = company.filter((x) => x.companyId === slug);
 
-  console.log(selectedCompany);
   useEffect(() => {
     props.getRealData();
   }, []);
-
-  const seeMap = (lat, lng) => {
-    console.log("maap HEre ");
-    console.log(lat);
-    console.log(lng);
-  };
-
   return (
-    <div class="custom-shape-divider-top-1600808309">
+    <div className="custom-shape-divider-top-1600808309">
       <svg
         data-name="Layer 1"
         xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +26,7 @@ const GetTokens = (props) => {
       >
         <path
           d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-          class="shape-fill"
+          className="shape-fill"
         ></path>
       </svg>
       <Container>
@@ -74,15 +66,27 @@ const GetTokens = (props) => {
                   Address: {selectedCompany[0].address}
                 </h5>
               </div>
+              {showMap && (
+                <MyMapComponents
+                  marker={{
+                    lat: selectedCompany[0].axis.lat,
+                    lng: selectedCompany[0].axis.lng,
+                  }}
+                  axis={{
+                    lat: selectedCompany[0].axis.lat,
+                    lng: selectedCompany[0].axis.lng,
+                  }}
+                  isMarkerShown
+                  googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                  loadingElement={<div style={{ height: `100%` }} />}
+                  containerElement={<div style={{ height: `400px` }} />}
+                  mapElement={<div style={{ height: `100%` }} />}
+                />
+              )}
               <Button
                 variant="outline-warning"
                 className="mx-1"
-                onClick={() =>
-                  seeMap(
-                    selectedCompany[0].axis.lat,
-                    selectedCompany[0].axis.lng
-                  )
-                }
+                onClick={() => setShowMap(true)}
               >
                 See Address
               </Button>
@@ -95,8 +99,6 @@ const GetTokens = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  console.log(state);
-  console.log("state from companyDetails", state);
   return {
     company: state.companyReducer.companyList,
   };
