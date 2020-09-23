@@ -18,16 +18,19 @@ import { useHistory } from "react-router-dom";
 import AddCompanyForm from "../../component/AddCompanyForm";
 import { Link } from "react-router-dom";
 import "./company.css";
-import useWebAnimations, { shakeY,wobble,backInDown } from "@wellyshen/use-web-animations";
+import useWebAnimations, {
+  shakeY,
+  wobble,
+  backInDown,
+} from "@wellyshen/use-web-animations";
 
-const Company = (props,getMap) => {
+const Company = (props, getMap) => {
   const { ref: heading } = useWebAnimations({
     ...shakeY,
     timing: {
-      delay:500,
-      duration: 1000 * 20, 
+      delay: 500,
+      duration: 1000 * 20,
       iterations: Infinity,
-      
     },
   });
   const companyListArray = props && props.allCompanies;
@@ -43,15 +46,13 @@ const Company = (props,getMap) => {
     });
     props.addDataToDB(companyList);
   };
-  const remove_Company = async (name) => {
-    const CompanyId = await getId(name);
-    const docId = CompanyId.docs[0].id;
-    delete_company(docId);
+  const remove_Company = async (id) => {
+    delete_company(id);
   };
   useEffect(() => {
     if (companyListArray === undefined) {
       getCompanies();
-      }
+    }
   }, []);
 
   useEffect(() => {
@@ -87,7 +88,9 @@ const Company = (props,getMap) => {
     <div className="companyWrapper">
       <div className="companyContent text-dark hello">
         <span className="pt-5">
-          <h1 className="text-center text-dark py-5 heading" ref={heading}>Queue App</h1>
+          <h1 className="text-center text-dark py-5 heading" ref={heading}>
+            Queue App
+          </h1>
           <h1 className="text-center compheading">*** Add Company ***</h1>
         </span>
 

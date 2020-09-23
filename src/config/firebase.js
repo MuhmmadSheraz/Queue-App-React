@@ -42,15 +42,18 @@ const addUserToFirebase = (uid, email, userName) => {
     userName: userName,
   });
 };
-const addCompanyToFirebase = (companyListInstance,id) => {
-  firebase.firestore().collection("companyList").add({
+const addCompanyToFirebase = (companyListInstance, marker) => {
+  let ref = firebase.firestore().collection("companyList").doc();
+  const id = ref.id;
+  ref.set({
     companyName: companyListInstance.companyName,
     userId: companyListInstance.userId,
     since: companyListInstance.since,
     timingFrom: companyListInstance.timingFrom,
     timingTo: companyListInstance.timingTo,
-    companyId:id,
-    address:companyListInstance.address
+    address: companyListInstance.address,
+    companyId: id,
+    axis: marker,
   });
 };
 const currentUser = () => {
@@ -59,16 +62,11 @@ const currentUser = () => {
 const getAllCompanies = () => {
   return firebase.firestore().collection("companyList").get();
 };
-const getId = (param) => {
-  return firebase
-    .firestore()
-    .collection("companyList")
-    .where("companyName", "==", param)
-    .get();
+
+const getCompanyData = (compId) => {
+  console.log(compId);
+  return firebase.firestore().collection("companyList").doc(compId).get();
 };
-// const getCompId=(param)=>{
-//   firebase.firestore().collection("companyList").doc(param)
-// }
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
   firebase.firestore().collection("companyList").doc(docId).update({
     timeTurned: addTime,
@@ -81,9 +79,7 @@ const resetTokens = (docId) => {
     totalTokens: 0,
   });
 };
-const getDetails = (docID) => {
-  return firebase.firestore().collection("companyList").doc(docID).get();
-};
+
 const delete_company = (param) => {
   return firebase.firestore().collection("companyList").doc(param).delete();
 };
@@ -95,10 +91,9 @@ export {
   addUserToFirebase,
   currentUser,
   getAllCompanies,
-  getId,
   updateDailyDetails,
   resetTokens,
-  getDetails,
   delete_company,
+  getCompanyData,
   storage,
 };

@@ -36,8 +36,7 @@ const AddCompanyForm = (props) => {
   };
 
   const addFormData = () => {
-    let ref = firebase.firestore().collection("companyList").doc();
-    const id = ref.id;
+    
     if (
       !companyList.hasOwnProperty("companyName") ||
       !companyList.hasOwnProperty("since") ||
@@ -49,8 +48,8 @@ const AddCompanyForm = (props) => {
     }
     const userId = props.currentUser.user.userId;
     companyList.userId = userId;
-    props.addForm((companyList.compId = id));
-    addCompanyToFirebase(companyList, id);
+    // props.addForm((companyList));
+    addCompanyToFirebase(companyList,marker);
     handleClose();
   };
 
@@ -176,7 +175,7 @@ const AddCompanyForm = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  console.log("state from add form",state)
+  console.log("state from add form", state);
   return {
     hello: state.companyReducer,
     currentUser: state.authReducer,

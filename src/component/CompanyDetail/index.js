@@ -9,7 +9,7 @@ import {
   getId,
   updateDailyDetails,
   resetTokens,
-  getDetails,
+  getCompanyData,
 } from "../../config/firebase";
 import "./companyDetails.css";
 import { realTime } from "../../Store/actions/companyAction";
@@ -20,9 +20,8 @@ const CompanyDeatils = (props) => {
   const [addTime, setTime] = useState("");
   const { id } = useParams();
   const allCompanies = props && props.company;
-  console.log(allCompanies)
   const selectedCompany = allCompanies.filter((x) => x.companyId === id);
-  console.log(selectedCompany)
+  console.log(selectedCompany);
   const name = selectedCompany[0].companyName;
   useEffect(() => {
     props.getRealData();
@@ -30,19 +29,16 @@ const CompanyDeatils = (props) => {
   }, []);
 
   const resetToken = async () => {
-    const CompanyId = await getId(name);
-    const docId = CompanyId.docs[0].id;
-    const data = await getDetails(docId);
+   
+    const data = await getCompanyData(id);
     const prevDate = await data.data().createdOn;
     if (new Date().toLocaleDateString() !== prevDate) {
-      await resetTokens(docId);
+      await resetTokens(id);
     }
   };
   const updateDetails = async (name) => {
-    const CompanyId = await getId(name);
-    const docId = CompanyId.docs[0].id;
     let date = new Date().toLocaleDateString();
-    await updateDailyDetails(docId, addTokens, addTime, date);
+    await updateDailyDetails(id, addTokens, addTime, date);
     props.getRealData();
   };
   const { keyframes, timing } = shakeY;
@@ -52,7 +48,7 @@ const CompanyDeatils = (props) => {
       ...timing,
       delay: 500, // Delay 1s,
       iterations: Infinity,
-      duration: timing.duration *10.75, // Speed up the animation
+      duration: timing.duration * 10.75, // Speed up the animation
     },
   });
   return (
@@ -118,7 +114,7 @@ const CompanyDeatils = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  console.log("state from companyDetails",state)
+  console.log("state from companyDetails", state);
   return {
     company: state.companyReducer.companyList,
   };

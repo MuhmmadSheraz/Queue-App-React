@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import "./gettokens.css";
 import { BiMap } from "react-icons/bi";
+import { useParams } from "react-router-dom";
+import { realTime } from "../../Store/actions/companyAction";
+import { connect } from "react-redux";
 
-const GetTokens = () => {
+// import { getCompanyData } from "../../config/firebase";
+const GetTokens = (props) => {
+  // const [selectedCompany, setselectedCompany] = useState("");
+  const { slug } = useParams();
+  const company = props && props.company;
+  const selectedCompany = company.filter((x) => x.companyId === slug);
+
+  console.log(selectedCompany);
+  useEffect(() => {
+    props.getRealData();
+  }, []);
+
+  const seeMap = (lat, lng) => {
+    console.log("maap HEre ");
+    console.log(lat);
+    console.log(lng);
+  };
+
   return (
     <div class="custom-shape-divider-top-1600808309">
       <svg
@@ -31,26 +51,40 @@ const GetTokens = () => {
               </div>
             </div>
             <div className="cardBody mt-5 pt-2">
-              <h3 className="text-center">Company Name</h3>
+              <h3 className="text-center">{selectedCompany[0].companyName}</h3>
               <div className="tokensDetails mt-3">
                 <div className="currentTokens">
-                  <h4>20</h4>
+                  <h4>{selectedCompany[0].totalTokens}</h4>
                   <p className="pt-1">Current Token Available</p>
                 </div>
                 <div className="totalTokens">
-                  <h4>30</h4>
-
+                  <h4>{selectedCompany[0].totalTokens}</h4>
                   <p className="pt-1">Total Tokens</p>
                 </div>
               </div>
               <div className="companyDetails">
-                <h5 className="p-2 m-2">Since: 1999</h5>
-                <h5 className="p-2 m-2">Timing To: 9 AM</h5>
-                <h5 className="p-2 m-2">Timing From: 10 PM</h5>
-                <h5 className="p-2 m-2">Address: Cubic Center</h5>
+                <h5 className="p-2 m-2">Since: {selectedCompany[0].since}</h5>
+                <h5 className="p-2 m-2">
+                  Timing To: {selectedCompany[0].timingFrom}
+                </h5>
+                <h5 className="p-2 m-2">
+                  Timing From: {selectedCompany[0].timingTo}
+                </h5>
+                <h5 className="p-2 m-2">
+                  Address: {selectedCompany[0].address}
+                </h5>
               </div>
-              <Button variant="outline-warning" className="mx-1">
-                See Address{" "}
+              <Button
+                variant="outline-warning"
+                className="mx-1"
+                onClick={() =>
+                  seeMap(
+                    selectedCompany[0].axis.lat,
+                    selectedCompany[0].axis.lng
+                  )
+                }
+              >
+                See Address
               </Button>
               <Button variant="outline-success">Purchase Token</Button>
             </div>
@@ -60,4 +94,16 @@ const GetTokens = () => {
     </div>
   );
 };
-export default GetTokens;
+const mapStateToProps = (state) => {
+  console.log(state);
+  console.log("state from companyDetails", state);
+  return {
+    company: state.companyReducer.companyList,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getRealData: () => dispatch(realTime()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(GetTokens);
