@@ -35,11 +35,19 @@ const GetTokens = (props) => {
           <div className="card">
             <div className="cardHeader">
               <div className="profileImg rounded-circle">
-                <img
-                  className="rounded-circle"
-                  src="https://avatars1.githubusercontent.com/u/61803642?s=460&u=f0f3428f6ff97c01b59f61add06b9e9bc9727ecc&v=4"
-                  alt="profilePic"
-                />
+                {selectedCompany[0].image ? (
+                  <img
+                    className="rounded-circle"
+                    src={selectedCompany[0].image}
+                    alt="profilePic"
+                  />
+                ) : (
+                  <img
+                    className="rounded-circle"
+                    src="https://argauto.lv/application/modules/themes/views/default/assets/images/image-placeholder.png"
+                    alt="profilePic"
+                  />
+                )}
               </div>
             </div>
             <div className="cardBody mt-5 pt-2">

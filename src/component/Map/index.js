@@ -9,14 +9,13 @@ import {
 const MyMapComponent = withScriptjs(
   withGoogleMap((props) => (
     <GoogleMap
-      defaultZoom={12}
+      defaultZoom={8}
       defaultCenter={{ lat: 25.1933895, lng: 66.5949635 }}
     >
       {props.isMarkerShown && (
         <Marker
           draggable={true}
           onDragEnd={(event) => {
-            console.log(event);
             const lat = event.latLng.lat();
             const lng = event.latLng.lng();
             fetch(
@@ -24,11 +23,8 @@ const MyMapComponent = withScriptjs(
             )
               .then((res) => res.json())
               .then((res) => {
-                console.log(res);
                 props.hello(res);
               });
-            console.log("Lat", lat);
-            console.log("Lng", lng);
           }}
           position={{ lat: props.marker.lat, lng: props.marker.lng }}
         />
@@ -38,16 +34,12 @@ const MyMapComponent = withScriptjs(
 );
 const MyMapComponents = withScriptjs(
   withGoogleMap((props) => (
-    
     <GoogleMap
       defaultZoom={12}
-      defaultCenter={{ lat: props.axis.lat, lng: props.axis.lng}}
+      defaultCenter={{ lat: props.axis.lat, lng: props.axis.lng }}
     >
       {props.isMarkerShown && (
-        <Marker
-       
-          position={{ lat: props.marker.lat, lng: props.marker.lng }}
-        />
+        <Marker position={{ lat: props.marker.lat, lng: props.marker.lng }} />
       )}
     </GoogleMap>
   ))

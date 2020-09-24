@@ -3,7 +3,7 @@ import "./addcompanyform.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import {MyMapComponent} from "../Map/index";
+import { MyMapComponent } from "../Map/index";
 import { companyAction } from "../../Store/actions/companyAction";
 import SweetAlert from "sweetalert2-react";
 
@@ -20,6 +20,7 @@ const AddCompanyForm = (props) => {
   const [getMapData, setMapData] = useState([]);
   const [marker, setMarker] = useState({ lat: 25.1933895, lng: 66.5949635 });
   const [addressList, setAddressList] = useState(false);
+  const [image, setImage] = useState("");
   const getArea = (area) => {
     const a = area.response.venues;
     setMarker(
@@ -31,8 +32,11 @@ const AddCompanyForm = (props) => {
     }
   };
 
+  const getImage = (e) => {
+    const img = e.target.files[0];
+    setImage(img);
+  };
   const addFormData = () => {
-    
     if (
       !companyList.hasOwnProperty("companyName") ||
       !companyList.hasOwnProperty("since") ||
@@ -45,7 +49,7 @@ const AddCompanyForm = (props) => {
     const userId = props.currentUser.user.userId;
     companyList.userId = userId;
     // props.addForm((companyList));
-    addCompanyToFirebase(companyList,marker);
+    addCompanyToFirebase(companyList, marker,image);
     handleClose();
   };
 
@@ -98,7 +102,10 @@ const AddCompanyForm = (props) => {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.File label="Certificates (Max 3 Images)" />
+                <Form.File
+                  label="Certificates (Max 3 Images)"
+                  onChange={(e) => getImage(e)}
+                />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Timings</Form.Label>

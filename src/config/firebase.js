@@ -42,19 +42,49 @@ const addUserToFirebase = (uid, email, userName) => {
     userName: userName,
   });
 };
-const addCompanyToFirebase = (companyListInstance, marker) => {
+const addCompanyToFirebase = (companyListInstance, marker, image) => {
   let ref = firebase.firestore().collection("companyList").doc();
   const id = ref.id;
-  ref.set({
-    companyName: companyListInstance.companyName,
-    userId: companyListInstance.userId,
-    since: companyListInstance.since,
-    timingFrom: companyListInstance.timingFrom,
-    timingTo: companyListInstance.timingTo,
-    address: companyListInstance.address,
-    companyId: id,
-    axis: marker,
-  });
+  if (image === "") {
+    ref.set({
+      companyName: companyListInstance.companyName,
+      userId: companyListInstance.userId,
+      since: companyListInstance.since,
+      timingFrom: companyListInstance.timingFrom,
+      timingTo: companyListInstance.timingTo,
+      address: companyListInstance.address,
+      companyId: id,
+      axis: marker,
+    });
+  } else if (image != "") {
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {},
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("images")
+          .child(image.name)
+          .getDownloadURL()
+          .then((url) => {
+            ref.set({
+              companyName: companyListInstance.companyName,
+              userId: companyListInstance.userId,
+              since: companyListInstance.since,
+              timingFrom: companyListInstance.timingFrom,
+              timingTo: companyListInstance.timingTo,
+              address: companyListInstance.address,
+              companyId: id,
+              axis: marker,
+              image: url,
+            });
+          });
+      }
+    );
+  }
 };
 const currentUser = () => {
   return firebase.auth().onAuthStateChanged();
