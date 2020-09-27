@@ -89,12 +89,16 @@ const addCompanyToFirebase = (companyListInstance, marker, image) => {
 const currentUser = () => {
   return firebase.auth().onAuthStateChanged();
 };
-const getAllCompanies = () => {
+const user = () => {
+  return firebase.auth().currentUser;
+};
+const getAllCompanies = (limit) => {
+  if (limit)
+    return firebase.firestore().collection("companyList").limit(limit).get();
   return firebase.firestore().collection("companyList").get();
 };
 
 const getCompanyData = (compId) => {
-  console.log(compId);
   return firebase.firestore().collection("companyList").doc(compId).get();
 };
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
@@ -102,6 +106,7 @@ const updateDailyDetails = (docId, addTokens, addTime, date) => {
     timeTurned: addTime,
     totalTokens: addTokens,
     createdOn: date,
+    currentTokens: addTokens,
   });
 };
 const resetTokens = (docId) => {
@@ -113,6 +118,25 @@ const resetTokens = (docId) => {
 const delete_company = (param) => {
   return firebase.firestore().collection("companyList").doc(param).delete();
 };
+const purchaseToken = (tokenObj) => {
+  return firebase.firestore().collection("buyers").add({
+    companyId: tokenObj.companyId,
+    buyerId: tokenObj.buyerId,
+    tokenNumber: tokenObj.tokenNumber,
+    datePurchase: tokenObj.datePurchase,
+  });
+};
+const updateTokens = (id, currTokens) => {
+  console.log("Token Updated");
+  return firebase
+    .firestore()
+    .collection("companyList")
+    .doc(id)
+    .update({
+      currentTokens: currTokens - 1,
+    });
+};
+
 export {
   login,
   logOut,
@@ -124,6 +148,9 @@ export {
   updateDailyDetails,
   resetTokens,
   delete_company,
+  user,
   getCompanyData,
+  purchaseToken,
+  updateTokens,
   storage,
 };

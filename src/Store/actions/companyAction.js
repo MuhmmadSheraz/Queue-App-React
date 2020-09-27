@@ -28,6 +28,19 @@ const realTime = () => {
       });
   };
 };
+const realTime2 = (id) => {
+
+  return (dispatch) => {
+    firebase
+      .firestore()
+      .collection("companyList")
+      .doc(id)
+      .onSnapshot((res) => {
+console.log(res.data())
+        return res.data();
+      });
+  };
+};
 
 const removeCompany = (data) => {
   console.log("datat", data);
@@ -49,4 +62,5 @@ export {
   addCompaniesFromDB,
   realTime,
   removeCompany,
+  realTime2
 };

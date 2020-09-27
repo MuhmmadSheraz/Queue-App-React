@@ -10,6 +10,7 @@ import {
   updateDailyDetails,
   resetTokens,
   getCompanyData,
+  
 } from "../../config/firebase";
 import "./companyDetails.css";
 import { realTime } from "../../Store/actions/companyAction";
@@ -33,7 +34,7 @@ const CompanyDeatils = (props) => {
     const data = await getCompanyData(id);
     const prevDate = await data.data().createdOn;
     if (new Date().toLocaleDateString() !== prevDate) {
-      await resetTokens(id);
+ resetTokens(id);
     }
   };
   const updateDetails = async (name) => {
@@ -46,9 +47,9 @@ const CompanyDeatils = (props) => {
     keyframes,
     timing: {
       ...timing,
-      delay: 500, // Delay 1s,
+      delay: 500, 
       iterations: Infinity,
-      duration: timing.duration * 10.75, // Speed up the animation
+      duration: timing.duration * 10.75, 
     },
   });
   return (
@@ -103,9 +104,7 @@ const CompanyDeatils = (props) => {
               >
                 Update
               </button>
-              {/* <button className="addTokenBtn" onClick={() => resetToken(name)}>
-                Reset Tokens
-              </button> */}
+             
             </Col>
           </Row>
         </div>

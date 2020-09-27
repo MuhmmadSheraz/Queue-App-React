@@ -3,19 +3,48 @@ import { Container, Button } from "react-bootstrap";
 import "./gettokens.css";
 import { BiMap } from "react-icons/bi";
 import { useParams } from "react-router-dom";
-import { realTime } from "../../Store/actions/companyAction";
+import { realTime, realTime2 } from "../../Store/actions/companyAction";
 import { connect } from "react-redux";
 import { MyMapComponents } from "../../component/Map/index";
-
+import {
+  user,
+  purchaseToken,
+  updateTokens,
+  getRealSpecific,
+  firebase
+} from "../../config/firebase.js";
 const GetTokens = (props) => {
+  const [selectedCompany, setSelectedCompany] = useState("");
   const [showMap, setShowMap] = useState(false);
+  const [disableBtn, setDisaleBtn] = useState(false);
   const { slug } = useParams();
-  const company = props && props.company;
-  const selectedCompany = company.filter((x) => x.companyId === slug);
 
   useEffect(() => {
-    props.getRealData();
+    getRealSpecific(slug);
   }, []);
+  const getRealSpecific = (slug) => {
+    firebase
+      .firestore()
+      .collection("companyList")
+      .doc(slug)
+      .onSnapshot((item) => {
+        setSelectedCompany(item.data());
+      });
+  };
+  
+  const buyToken = async () => {
+    console.log("purchased")
+    const a = await user().uid;
+    let tokenObj = {
+      buyerId: a,
+      companyId: slug,
+      datePurchase: new Date().toLocaleDateString(),
+      tokenNumber: selectedCompany.currentTokens,
+    };
+    purchaseToken(tokenObj, slug, selectedCompany.currentTokens);
+    updateTokens(slug, selectedCompany.currentTokens);
+    setDisaleBtn(true);
+  };
   return (
     <div className="custom-shape-divider-top-1600808309">
       <svg
@@ -35,10 +64,10 @@ const GetTokens = (props) => {
           <div className="card">
             <div className="cardHeader">
               <div className="profileImg rounded-circle">
-                {selectedCompany[0].image ? (
+                {selectedCompany.image ? (
                   <img
                     className="rounded-circle"
-                    src={selectedCompany[0].image}
+                    src={selectedCompany.image}
                     alt="profilePic"
                   />
                 ) : (
@@ -51,38 +80,49 @@ const GetTokens = (props) => {
               </div>
             </div>
             <div className="cardBody mt-5 pt-2">
-              <h3 className="text-center">{selectedCompany[0].companyName}</h3>
-              <div className="tokensDetails mt-3">
-                <div className="currentTokens">
-                  <h4>{selectedCompany[0].totalTokens}</h4>
-                  <p className="pt-1">Current Token Available</p>
+              <h3 className="text-center">{selectedCompany.companyName}</h3>
+              {selectedCompany.totalTokens ? (
+                <div className="tokensDetails mt-3">
+                  <div className="currentTokens">
+                    <h4>{selectedCompany.currentTokens}</h4>
+                    <p className="pt-1">Current Token Available</p>
+                  </div>
+                  <div className="totalTokens">
+                    <h4>{selectedCompany.totalTokens}</h4>
+                    <p className="pt-1">Total Tokens</p>
+                  </div>
                 </div>
-                <div className="totalTokens">
-                  <h4>{selectedCompany[0].totalTokens}</h4>
-                  <p className="pt-1">Total Tokens</p>
+              ) : (
+                <div className="tokensDetails mt-3">
+                  <div className="currentTokens">
+                    <h4>Not Available</h4>
+                    <p className="pt-1">Current Token Available</p>
+                  </div>
+                  <div className="totalTokens">
+                    <h4>Not Available</h4>
+                    <p className="pt-1">Total Tokens</p>
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="companyDetails">
-                <h5 className="p-2 m-2">Since: {selectedCompany[0].since}</h5>
+                <h5 className="p-2 m-2">Since: {selectedCompany.since}</h5>
                 <h5 className="p-2 m-2">
-                  Timing To: {selectedCompany[0].timingFrom}
+                  Timing To: {selectedCompany.timingFrom}
                 </h5>
                 <h5 className="p-2 m-2">
-                  Timing From: {selectedCompany[0].timingTo}
+                  Timing From: {selectedCompany.timingTo}
                 </h5>
-                <h5 className="p-2 m-2">
-                  Address: {selectedCompany[0].address}
-                </h5>
+                <h5 className="p-2 m-2">Address: {selectedCompany.address}</h5>
               </div>
               {showMap && (
                 <MyMapComponents
                   marker={{
-                    lat: selectedCompany[0].axis.lat,
-                    lng: selectedCompany[0].axis.lng,
+                    lat: selectedCompany.axis.lat,
+                    lng: selectedCompany.axis.lng,
                   }}
                   axis={{
-                    lat: selectedCompany[0].axis.lat,
-                    lng: selectedCompany[0].axis.lng,
+                    lat: selectedCompany.axis.lat,
+                    lng: selectedCompany.axis.lng,
                   }}
                   isMarkerShown
                   googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
@@ -98,7 +138,15 @@ const GetTokens = (props) => {
               >
                 See Address
               </Button>
-              <Button variant="outline-success">Purchase Token</Button>
+              {disableBtn ? (
+                <Button variant="outline-success" onClick={buyToken} disabled>
+                  Purchase Token
+                </Button>
+              ) : (
+                <Button variant="outline-success" onClick={buyToken} >
+                  Purchase Token
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -106,14 +154,15 @@ const GetTokens = (props) => {
     </div>
   );
 };
-const mapStateToProps = (state) => {
-  return {
-    company: state.companyReducer.companyList,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getRealData: () => dispatch(realTime()),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(GetTokens);
+// const mapStateToProps = (state) => {
+//   return {
+//     company: state.companyReducer.companyList,
+//   };
+// };
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     getRealData: () => dispatch(realTime()),
+//     getRealData2: (id) => dispatch(realTime2(id)),
+//   };
+// };
+export default connect(null, null)(GetTokens);
