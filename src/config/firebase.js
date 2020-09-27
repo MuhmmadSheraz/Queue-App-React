@@ -99,14 +99,14 @@ const getAllCompanies = (limit) => {
 };
 
 const getCompanyData = (compId) => {
-  return firebase.firestore().collection("companyList").doc(compId).get();
+  return firebase.firestore().collection("companyList").doc(compId).get().limit(10);
 };
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
   firebase.firestore().collection("companyList").doc(docId).update({
     timeTurned: addTime,
     totalTokens: addTokens,
     createdOn: date,
-    currentTokens: addTokens,
+    currentTokens: 1,
   });
 };
 const resetTokens = (docId) => {
@@ -118,12 +118,21 @@ const resetTokens = (docId) => {
 const delete_company = (param) => {
   return firebase.firestore().collection("companyList").doc(param).delete();
 };
+const unsubscribe = firebase.firestore().collection("companyList")
+    .onSnapshot(function (){
+      // Respond to data
+      // ...
+    });
 const purchaseToken = (tokenObj) => {
   return firebase.firestore().collection("buyers").add({
     companyId: tokenObj.companyId,
     buyerId: tokenObj.buyerId,
     tokenNumber: tokenObj.tokenNumber,
     datePurchase: tokenObj.datePurchase,
+    buyerName:tokenObj.buyerName,
+    buyerId:tokenObj.buyerId,
+    buyerEmail:tokenObj.buyerEmail,
+    buyerProfile:tokenObj.buyerProfile,
   });
 };
 const updateTokens = (id, currTokens) => {
@@ -133,10 +142,17 @@ const updateTokens = (id, currTokens) => {
     .collection("companyList")
     .doc(id)
     .update({
-      currentTokens: currTokens - 1,
+      currentTokens: currTokens +1,
     });
 };
-
+const seeBuyers = (id) => {
+  console.log(id)
+  return firebase
+    .firestore()
+    .collection("buyers")
+    .where("companyId", "==", id)
+    .get();
+};
 export {
   login,
   logOut,
@@ -152,5 +168,7 @@ export {
   getCompanyData,
   purchaseToken,
   updateTokens,
+  seeBuyers,
+  unsubscribe,
   storage,
 };

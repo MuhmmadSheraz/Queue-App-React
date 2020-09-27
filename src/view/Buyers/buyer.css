@@ -1,0 +1,66 @@
+.buyersMainWrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.buyersContent {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  width: 75%;
+  font-size: 25px;
+}
+
+.companyList {
+  color: black;
+  margin: 5px;
+  background-color: white;
+  border: 1px solid #007bff;
+  padding: 10px 15px;
+}
+
+
+
+.headingBuyer {
+  color: #4884dc !important;
+  font-size: 75px;
+}
+.tokenBuyer{
+  /* float: right !important; */
+}
+.profile{
+  height: 100px;
+}
+@media (max-width: 539px) {
+  .heading {
+    font-size: 60px;
+  }
+}
+@media (max-width: 516px) {
+  .compheading {
+    font-size: 35px;
+  }
+}
+@media (max-width: 432px) {
+  .heading {
+    font-size: 50px;
+  }
+  .compheading {
+    font-size: 25px;
+  }
+}
+@media (max-width: 370px) {
+  .heading {
+    font-size: 40px;
+  }
+  .compheading {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 280px) {
+  .heading {
+    font-size: 38px;
+  }
+}

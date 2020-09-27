@@ -11,7 +11,8 @@ import {
   purchaseToken,
   updateTokens,
   getRealSpecific,
-  firebase
+  firebase,
+  unsubscribe
 } from "../../config/firebase.js";
 const GetTokens = (props) => {
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -21,6 +22,10 @@ const GetTokens = (props) => {
 
   useEffect(() => {
     getRealSpecific(slug);
+    return(()=>{
+      console.log("get Tokens UnMounted")
+      unsubscribe()
+    })
   }, []);
   const getRealSpecific = (slug) => {
     firebase
@@ -31,15 +36,19 @@ const GetTokens = (props) => {
         setSelectedCompany(item.data());
       });
   };
-  
+
   const buyToken = async () => {
-    console.log("purchased")
-    const a = await user().uid;
+    console.log("purchased");
+    console.log(await user().photoURL);
+    const a = await user();
     let tokenObj = {
-      buyerId: a,
       companyId: slug,
       datePurchase: new Date().toLocaleDateString(),
       tokenNumber: selectedCompany.currentTokens,
+      buyerId: a.uid,
+      buyerName: a.displayName,
+      buyerEmail: a.email,
+      buyerProfile: a.photoURL,
     };
     purchaseToken(tokenObj, slug, selectedCompany.currentTokens);
     updateTokens(slug, selectedCompany.currentTokens);
@@ -138,15 +147,15 @@ const GetTokens = (props) => {
               >
                 See Address
               </Button>
-              {disableBtn ? (
+              {/* {disableBtn ? (
                 <Button variant="outline-success" onClick={buyToken} disabled>
                   Purchase Token
                 </Button>
-              ) : (
-                <Button variant="outline-success" onClick={buyToken} >
-                  Purchase Token
-                </Button>
-              )}
+              ) : ( */}
+              <Button variant="outline-success" onClick={buyToken}>
+                Purchase Token
+              </Button>
+              {/* )} */}
             </div>
           </div>
         </div>

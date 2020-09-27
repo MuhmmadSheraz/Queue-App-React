@@ -10,6 +10,7 @@ import Login from "../view/Login";
 import Company from "../view/Company";
 import CompanyDetail from "../component/CompanyDetail";
 import GetAllCompanies from "../view/GetAllCompanies/index.js" 
+import Buyers from "../view/Buyers"
 import GetTokens from "../component/GetTokens/index"
 import "../App.css";
 import authReducer from "../Store/rootReducer";
@@ -37,6 +38,7 @@ const RouterNav = (props) => {
           <Route exact path="/company/:id" component={CompanyDetail}></Route>
           <Route exact path="/GetAllCompanies" component={GetAllCompanies}></Route>
           <Route exact path="/GetAllCompanies/:slug" component={GetTokens}></Route>
+          <Route exact path="/company/buyers/:compID" component={Buyers}></Route>
         </Switch>
       </Router>
     </>
@@ -45,6 +47,5 @@ const RouterNav = (props) => {
 export default RouterNav;
 
 let authChecker = (isLoggedIn, component) => {
-  console.log("FormRouter************", isLoggedIn);
   return isLoggedIn ? component : <Redirect to="/" />;
 };

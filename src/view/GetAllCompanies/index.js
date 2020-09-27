@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
 import { connect } from "react-redux";
-import { getAllCompanies } from "../../config/firebase";
+import { getAllCompanies, unsubscribe } from "../../config/firebase";
 
 const GetAllCompanies = (props) => {
   const [companies, setCompanies] = useState([]);
@@ -28,6 +28,9 @@ const GetAllCompanies = (props) => {
 
   useEffect(() => {
     allCompanies(limit);
+    return () => {
+      unsubscribe();
+    };
   }, [limit]);
   const { ref: heading } = useWebAnimations({
     ...shakeY,
@@ -48,7 +51,7 @@ const GetAllCompanies = (props) => {
   //     });
   //   }
   // };
-  
+
   return (
     <div className="custom-shape-divider-top-1600808309">
       <svg
@@ -88,7 +91,7 @@ const GetAllCompanies = (props) => {
                     <div className="columnMain">
                       {x.companyName}
                       <Link to={`/GetAllCompanies/${x.companyId}`}>
-                        <Button >Get Tokens</Button>
+                        <Button>Get Tokens</Button>
                       </Link>
                     </div>
                   </Col>
