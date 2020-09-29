@@ -5,24 +5,25 @@
   background-size: cover;
   background-image: url("../../assets/26199.jpg");
   position: relative;
-    font-family: 'Rubik', sans-serif;
-
-
+  font-family: "Rubik", sans-serif;
 }
-.overlay{
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.3)
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .login {
+  text-align: left !important;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  /* opacity: 0.6; */
+  background-color: white;
 }
 .heading {
   text-align: center;
@@ -67,4 +68,49 @@
 }
 .fb:hover {
   cursor: pointer;
+}
+.authImage {
+  height: 100%;
+  width: 100%;
+}
+.authContent {
+  text-align: left;
+}
+.mainAuthContent {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.authInput {
+  padding: 10px;
+  border-radius: 20px;
+  outline: none !important;
+  border: 1px solid grey !important;
+  margin: 10px;
+}
+.authBtnLogin {
+  border-radius: 20px;
+  border: none !important;
+  outline: none;
+  padding: 10px 20px;
+}
+.toggleLink {
+  color: #4884dc;
+  cursor: pointer;
+}
+.authBtnLogin:hover {
+  background-color: #28a745;
+  color: white;
+}
+.authBtnSignUp {
+  border-radius: 20px;
+  border: none !important;
+  outline: none;
+  padding: 10px 20px;
+}
+
+.authBtnSignUp:hover {
+  background-color: #28a745;
+  color: white;
 }

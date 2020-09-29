@@ -31,6 +31,17 @@ const login = () => {
   });
   return firebase.auth().signInWithPopup(provider);
 };
+const signUp=(signUpObj)=>{
+  const {signUpEmail,signUpPassword}=signUpObj;
+  console.log(signUpEmail,signUpPassword)
+  return firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword)
+
+}
+const normalSignIn=(signInDetails)=>{
+  const {SignInemail,SignInpassword}=signInDetails
+ return firebase.auth().signInWithEmailAndPassword(SignInemail, SignInpassword)
+
+}
 const logOut = () => {
   return firebase.auth().signOut();
 };
@@ -99,7 +110,7 @@ const getAllCompanies = (limit) => {
 };
 
 const getCompanyData = (compId) => {
-  return firebase.firestore().collection("companyList").doc(compId).get().limit(10);
+  return firebase.firestore().collection("companyList").doc(compId).get();
 };
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
   firebase.firestore().collection("companyList").doc(docId).update({
@@ -156,6 +167,8 @@ const seeBuyers = (id) => {
 export {
   login,
   logOut,
+  signUp,
+  normalSignIn,
   addCompanyToFirebase,
   firebase,
   addUserToFirebase,
