@@ -143,17 +143,31 @@ const unsubscribe = firebase
     // Respond to data
     // ...
   });
-const purchaseToken = (tokenObj) => {
-  return firebase.firestore().collection("buyers").add({
-    companyId: tokenObj.companyId,
-    buyerId: tokenObj.buyerId,
-    tokenNumber: tokenObj.tokenNumber,
-    datePurchase: tokenObj.datePurchase,
-    buyerName: tokenObj.buyerName,
-    buyerId: tokenObj.buyerId,
-    buyerEmail: tokenObj.buyerEmail,
-    buyerProfile: tokenObj.buyerProfile,
+const unsubscribeBuyers = firebase
+  .firestore()
+  .collection("buyers")
+  .onSnapshot(function () {
+    // Respond to data
+    // ...
   });
+const purchaseToken = (tokenObj) => {
+  return firebase
+    .firestore()
+    .collection("buyers")
+    .add({
+      companyId: tokenObj.companyId,
+      buyerId: tokenObj.buyerId,
+      tokenNumber: tokenObj.tokenNumber,
+      datePurchase: tokenObj.datePurchase,
+      buyerName: tokenObj.buyerName,
+      buyerId: tokenObj.buyerId,
+      buyerEmail: tokenObj.buyerEmail,
+      buyerProfile: tokenObj.buyerProfile,
+      companyName: tokenObj.companyName,
+      companyImage: tokenObj.companyImage
+        ? tokenObj.companyImage
+        : "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+    });
 };
 const updateTokens = (id, currTokens) => {
   console.log("Token Updated");
@@ -173,12 +187,21 @@ const seeBuyers = (id) => {
     .where("companyId", "==", id)
     .get();
 };
-const getMyTokens = (doc) => {
-  console.log(doc)
-  return firebase.firestore().collection("buyers").where("buyerId","==",doc).get();
+// const getMyTokens = (doc) => {
+  // console.log(doc);
+  // return firebase
+  //   .firestore()
+  //   .collection("buyers")
+  //   .where("buyerId", "==", doc)
+  //   .get();
+// };
+const cancelToken = (doc) => {
+console.log("Token Cancel From Db",doc)
+  return firebase.firestore().collection("buyers").doc(doc).delete();
 };
 export {
-  getMyTokens,
+  unsubscribeBuyers,
+  cancelToken,
   resetTokensForAll,
   login,
   logOut,

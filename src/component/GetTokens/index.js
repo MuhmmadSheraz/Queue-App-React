@@ -45,10 +45,11 @@ const GetTokens = (props) => {
   };
 
   const buyToken = async () => {
-    console.log("purchased");
-    console.log(await user().photoURL);
+    console.log(selectedCompany);
     const a = await user();
     let tokenObj = {
+      companyName:selectedCompany.companyName,
+      companyImage:selectedCompany.image,
       companyId: slug,
       datePurchase: new Date().toLocaleDateString(),
       tokenNumber: selectedCompany.currentTokens,
@@ -59,7 +60,6 @@ const GetTokens = (props) => {
     };
     purchaseToken(tokenObj, slug, selectedCompany.currentTokens);
     updateTokens(slug, selectedCompany.currentTokens);
-    setDisaleBtn(true);
   };
   return (
     <div className="custom-shape-divider-top-1600808309">
