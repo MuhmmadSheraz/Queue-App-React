@@ -188,18 +188,25 @@ const seeBuyers = (id) => {
     .get();
 };
 // const getMyTokens = (doc) => {
-  // console.log(doc);
-  // return firebase
-  //   .firestore()
-  //   .collection("buyers")
-  //   .where("buyerId", "==", doc)
-  //   .get();
+// console.log(doc);
+// return firebase
+//   .firestore()
+//   .collection("buyers")
+//   .where("buyerId", "==", doc)
+//   .get();
 // };
 const cancelToken = (doc) => {
-console.log("Token Cancel From Db",doc)
+  console.log("Token Cancel From Db", doc);
   return firebase.firestore().collection("buyers").doc(doc).delete();
 };
+const addRandomCompanies = (name) => {
+  console.log(name);
+  return firebase.firestore().collection("companyList").add({
+    companyName: name,
+  });
+};
 export {
+  addRandomCompanies,
   unsubscribeBuyers,
   cancelToken,
   resetTokensForAll,

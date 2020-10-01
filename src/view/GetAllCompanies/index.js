@@ -11,27 +11,36 @@ import {
 import { Link } from "react-router-dom";
 import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
 import { connect } from "react-redux";
-import { getAllCompanies, unsubscribe, user } from "../../config/firebase";
-
+import {
+  getAllCompanies,
+  unsubscribe,
+  user,
+  addRandomCompanies,
+} from "../../config/firebase";
 const GetAllCompanies = (props) => {
+  const [limit, setLimit] = useState(10);
+  let loading = false;
   const [companies, setCompanies] = useState([]);
-  const [limit, setLimit] = useState(7);
+  // const [limit, setLimit] = useState(7);
   const array1 = [];
   const allCompanies = async (param) => {
+    loading = true;
+
     const result = await getAllCompanies(param);
     result.forEach((x) => {
       array1.push(x.data());
     });
     console.log(array1);
     setCompanies(array1);
+    loading = false;
   };
- 
-  useEffect(() => {
-    allCompanies(limit);
-    return () => {
-      unsubscribe();
-    };
-  }, [limit]);
+
+  // useEffect(() => {
+
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
   const { ref: heading } = useWebAnimations({
     ...shakeY,
     timing: {
@@ -51,9 +60,41 @@ const GetAllCompanies = (props) => {
       });
     }
   };
+  const random = () => {
+    for (let i = 0; i < 100; i++) {
+      addRandomCompanies(`Comapny==> ${i}`);
+    }
+  };
+  useEffect(() => {
+    // random();
+    document.addEventListener("scroll", trackScrolling);
 
+    return () => {
+      document.removeEventListener("scroll", trackScrolling);
+    };
+  }, []);
+  useEffect(() => {
+    allCompanies(limit);
+    document.addEventListener("scroll", trackScrolling);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [limit]);
+
+  const isBottom = (el) => {
+    return el.getBoundingClientRect().bottom <= window.innerHeight+10;
+  };
+
+  const trackScrolling = () => {
+    const wrappedElement = document.getElementById("header");
+    if (isBottom(wrappedElement) && !loading) {
+      document.removeEventListener("scroll", trackScrolling);
+      setLimit(limit+10)
+    }
+  };
   return (
-    <div className="custom-shape-divider-top-1600808309">
+    <div className="custom-shape-divider-top-1600808309"id="header">
       <svg
         data-name="Layer 1"
         xmlns="http://www.w3.org/2000/svg"
@@ -80,15 +121,14 @@ const GetAllCompanies = (props) => {
             />
           </InputGroup>
         </div>
-       
       </Container>
       <div className="content">
         <Row>
           <Container>
             {companies &&
-              companies.map((x) => {
+              companies.map((x,index) => {
                 return (
-                  <Col md="12" key={x.companyId}>
+                  <Col md="12" key={index}>
                     <div className="columnMain">
                       {x.companyName}
                       <Link to={`/GetAllCompanies/${x.companyId}`}>
