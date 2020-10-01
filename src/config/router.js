@@ -14,6 +14,7 @@ import Buyers from "../view/Buyers"
 import GetTokens from "../component/GetTokens/index"
 import "../App.css";
 import authReducer from "../Store/rootReducer";
+import MyTokens  from "../view/MyTokens"
 
 const RouterNav = (props) => {
   const { isLoggedIn, loader } = props;
@@ -39,6 +40,7 @@ const RouterNav = (props) => {
           <Route exact path="/GetAllCompanies" component={GetAllCompanies}></Route>
           <Route exact path="/GetAllCompanies/:slug" component={GetTokens}></Route>
           <Route exact path="/company/buyers/:compID" component={Buyers}></Route>
+          <Route exact path="/myTokens/" component={MyTokens}></Route>
         </Switch>
       </Router>
     </>

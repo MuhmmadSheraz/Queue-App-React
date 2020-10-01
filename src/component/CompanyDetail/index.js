@@ -26,25 +26,7 @@ const CompanyDeatils = (props) => {
   const selectedCompany = allCompanies.filter((x) => x.companyId === id);
   const name = selectedCompany[0].companyName;
   console.log(id)
-  // const showBuyers = async () => {
-  //   console.log(id);
-  //   if (buyers.length == 0) {
-  //     const a = [];
-  //     const dataBuyer = await seeBuyers(id);
-  //     dataBuyer.forEach((x) => a.push(x.data()));
-  //     setTimeout(() => {
-  //       setBuyers(a);
-  //     }, 1000);
-  //   } else {
-  //     setBuyers(buyers);
-  //     console.log(buyers);
-  //   }
-  // };
-  // const helloBuyer = async () => {
-  //   const abc = await showBuyers();
-  //   setBuyers(abc);
-  //   console.log(abc);
-  // };
+  
   useEffect(() => {
     props.getRealData();
     resetToken();
@@ -129,13 +111,7 @@ const CompanyDeatils = (props) => {
               </button>
             </Col>
           </Row>
-          {/* {buyers && (
-            <ul>
-              {buyers.map((x) => {
-                return <li>{x.buyerId}</li>;
-              })}
-            </ul>
-          )} */}
+         
         </div>
       </div>
     </div>

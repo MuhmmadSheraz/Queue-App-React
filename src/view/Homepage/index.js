@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 import { logOut, firebase } from "../../config/firebase";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { removeUser } from "../../Store/actions/authAction";
 import "./homepage.css";
 import { Button, Row, Col, Container } from "react-bootstrap";
@@ -9,29 +9,31 @@ import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
 import { companyActionNull } from "../../Store/actions/companyAction";
 import peopleQueue from "../../assets/peopleWaiting.jpg";
-import useWebAnimations, { shakeY,wobble,backInDown } from "@wellyshen/use-web-animations";
+import useWebAnimations, {
+  shakeY,
+  wobble,
+  backInDown,
+} from "@wellyshen/use-web-animations";
 
 const Homepage = (props) => {
   const { ref: heading } = useWebAnimations({
     ...wobble,
     timing: {
-      duration: 1000 *2,
+      duration: 1000 * 2,
       iterations: 1,
-     
     },
   });
   const { ref: username } = useWebAnimations({
     ...backInDown,
     timing: {
-      duration: 1000 *1,
+      duration: 1000 * 1,
       iterations: 1,
-     
     },
   });
   const { ref: image } = useWebAnimations({
     ...shakeY,
     timing: {
-      duration: 1000 *20,
+      duration: 1000 * 20,
       iterations: Infinity,
     },
   });
@@ -61,6 +63,9 @@ const Homepage = (props) => {
               <h4 className=" mb-2 name target" ref={username}>
                 Welcome {props.user && props.user.name}
               </h4>
+              <Link to={`/myTokens/`}>
+                <Button>Get Tokens</Button>
+              </Link>
 
               <Button
                 variant="outline-primary"
@@ -83,12 +88,13 @@ const Homepage = (props) => {
               >
                 Logout
               </Button>
+
               {/* <button onClick={props.removeAll()}>Remove All</button> */}
             </div>
           </div>
         </Col>
         <Col sm="6" className="">
-          <div className="img_wrapper target mx-2"ref={image}>
+          <div className="img_wrapper target mx-2" ref={image}>
             <img className="img" src={peopleQueue} />
           </div>
         </Col>

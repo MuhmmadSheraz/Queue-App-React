@@ -31,17 +31,19 @@ const login = () => {
   });
   return firebase.auth().signInWithPopup(provider);
 };
-const signUp=(signUpObj)=>{
-  const {signUpEmail,signUpPassword}=signUpObj;
-  console.log(signUpEmail,signUpPassword)
-  return firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword)
-
-}
-const normalSignIn=(signInDetails)=>{
-  const {SignInemail,SignInpassword}=signInDetails
- return firebase.auth().signInWithEmailAndPassword(SignInemail, SignInpassword)
-
-}
+const signUp = (signUpObj) => {
+  const { signUpEmail, signUpPassword } = signUpObj;
+  console.log(signUpEmail, signUpPassword);
+  return firebase
+    .auth()
+    .createUserWithEmailAndPassword(signUpEmail, signUpPassword);
+};
+const normalSignIn = (signInDetails) => {
+  const { SignInemail, SignInpassword } = signInDetails;
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword(SignInemail, SignInpassword);
+};
 const logOut = () => {
   return firebase.auth().signOut();
 };
@@ -125,25 +127,32 @@ const resetTokens = (docId) => {
     totalTokens: 0,
   });
 };
+const resetTokensForAll = () => {
+  firebase.firestore().collection("companyList").update({
+    totalTokens: 0,
+  });
+};
 
 const delete_company = (param) => {
   return firebase.firestore().collection("companyList").doc(param).delete();
 };
-const unsubscribe = firebase.firestore().collection("companyList")
-    .onSnapshot(function (){
-      // Respond to data
-      // ...
-    });
+const unsubscribe = firebase
+  .firestore()
+  .collection("companyList")
+  .onSnapshot(function () {
+    // Respond to data
+    // ...
+  });
 const purchaseToken = (tokenObj) => {
   return firebase.firestore().collection("buyers").add({
     companyId: tokenObj.companyId,
     buyerId: tokenObj.buyerId,
     tokenNumber: tokenObj.tokenNumber,
     datePurchase: tokenObj.datePurchase,
-    buyerName:tokenObj.buyerName,
-    buyerId:tokenObj.buyerId,
-    buyerEmail:tokenObj.buyerEmail,
-    buyerProfile:tokenObj.buyerProfile,
+    buyerName: tokenObj.buyerName,
+    buyerId: tokenObj.buyerId,
+    buyerEmail: tokenObj.buyerEmail,
+    buyerProfile: tokenObj.buyerProfile,
   });
 };
 const updateTokens = (id, currTokens) => {
@@ -153,18 +162,24 @@ const updateTokens = (id, currTokens) => {
     .collection("companyList")
     .doc(id)
     .update({
-      currentTokens: currTokens +1,
+      currentTokens: currTokens + 1,
     });
 };
 const seeBuyers = (id) => {
-  console.log(id)
+  console.log(id);
   return firebase
     .firestore()
     .collection("buyers")
     .where("companyId", "==", id)
     .get();
 };
+const getMyTokens = (doc) => {
+  console.log(doc)
+  return firebase.firestore().collection("buyers").where("buyerId","==",doc).get();
+};
 export {
+  getMyTokens,
+  resetTokensForAll,
   login,
   logOut,
   signUp,

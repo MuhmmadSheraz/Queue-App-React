@@ -9,6 +9,9 @@ import {
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { addUser, removeUser } from "../../Store/actions/authAction";
+
+import Swal from 'sweetalert2'
+
 const Login = (props) => {
   const [signInDetails, setSignInDetails] = useState("");
   const [signUpDetails, setSignUpDetails] = useState("");
@@ -16,7 +19,6 @@ const Login = (props) => {
   const history = useHistory();
 
   let loginBtn = async () => {
-    console.log("Fb Logged In")
     try {
       const hello = await login();
       const uid = hello.user.uid;
@@ -33,6 +35,10 @@ const Login = (props) => {
       );
       props.updateUser(userDetails);
     } catch (error) {
+      Swal.fire({
+        icon: "warning",
+        text: error.message,
+      });
       console.log("catch ***", error.message);
     }
   };
@@ -61,7 +67,7 @@ const Login = (props) => {
     try {
       const hello = await signUp(signUpDetails);
       const uid = hello.user.uid;
-       hello.user.updateProfile({
+      hello.user.updateProfile({
         displayName: signUpDetails.signUpUsername,
       });
       console.log(hello, uid);
@@ -74,6 +80,10 @@ const Login = (props) => {
       addUserToFirebase(uid, userDetails.email, userDetails.name);
       props.updateUser(userDetails);
     } catch (error) {
+      Swal.fire({
+        icon: "warning",
+        text: error.message,
+      });
       console.log("catch Here", error);
     }
   };
@@ -84,13 +94,18 @@ const Login = (props) => {
       console.log(hello, uid);
       const userDetails = {
         email: hello.user.email,
-        name:hello.user.displayName,
+        name: hello.user.displayName,
         userId: uid,
       };
       console.log("initial User***", userDetails);
 
       props.updateUser(userDetails);
     } catch (error) {
+      Swal.fire({
+        icon: "warning",
+        text: error.message,
+      });
+
       console.log("catch Here", error);
     }
   };
@@ -164,9 +179,11 @@ const Login = (props) => {
                 </button>
               </p>
               <hr />
-              <p className="text-muted text-center" >Sign In With Facebook</p>
+              <p className="text-muted text-center">Sign In With Facebook</p>
               <p>
-                <button className="fb" onClick={loginBtn}>Login With Facebook</button>
+                <button className="fb" onClick={loginBtn}>
+                  Login With Facebook
+                </button>
               </p>
               <p>
                 <p className="toggleLink" onClick={handleToggle}>

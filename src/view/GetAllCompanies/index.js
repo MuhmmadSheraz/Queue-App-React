@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
 import { connect } from "react-redux";
-import { getAllCompanies, unsubscribe } from "../../config/firebase";
+import { getAllCompanies, unsubscribe, user } from "../../config/firebase";
 
 const GetAllCompanies = (props) => {
   const [companies, setCompanies] = useState([]);
@@ -25,7 +25,7 @@ const GetAllCompanies = (props) => {
     console.log(array1);
     setCompanies(array1);
   };
-
+ 
   useEffect(() => {
     allCompanies(limit);
     return () => {
@@ -40,17 +40,17 @@ const GetAllCompanies = (props) => {
       iterations: Infinity,
     },
   });
-  // const searchCompany = (e) => {
-  //   const entry = e.target.value;
-  //   if (e.key === "Enter") {
-  //     if (entry == "") {
-  //       return setCompanies(props.getCompanyList.companyList);
-  //     }
-  //     setCompanies((prev) => {
-  //       return prev.filter((x) => x.companyName == entry);
-  //     });
-  //   }
-  // };
+  const searchCompany = (e) => {
+    const entry = e.target.value;
+    if (e.key === "Enter") {
+      if (entry == "") {
+        return setCompanies(props.getCompanyList.companyList);
+      }
+      setCompanies((prev) => {
+        return prev.filter((x) => x.companyName == entry);
+      });
+    }
+  };
 
   return (
     <div className="custom-shape-divider-top-1600808309">
@@ -76,10 +76,11 @@ const GetAllCompanies = (props) => {
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               placeholder="Search Company"
-              // onKeyDown={searchCompany}
+              onKeyDown={searchCompany}
             />
           </InputGroup>
         </div>
+       
       </Container>
       <div className="content">
         <Row>

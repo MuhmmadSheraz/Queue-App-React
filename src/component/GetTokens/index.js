@@ -12,7 +12,8 @@ import {
   updateTokens,
   getRealSpecific,
   firebase,
-  unsubscribe
+  unsubscribe,
+  resetTokens,
 } from "../../config/firebase.js";
 const GetTokens = (props) => {
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -22,10 +23,11 @@ const GetTokens = (props) => {
 
   useEffect(() => {
     getRealSpecific(slug);
-    return(()=>{
-      console.log("get Tokens UnMounted")
-      unsubscribe()
-    })
+    
+    return () => {
+      console.log("get Tokens UnMounted");
+      unsubscribe();
+    };
   }, []);
   const getRealSpecific = (slug) => {
     firebase
@@ -33,8 +35,13 @@ const GetTokens = (props) => {
       .collection("companyList")
       .doc(slug)
       .onSnapshot((item) => {
+        console.log(item.data())
+        if(item.data().createdOn  !== new Date().toLocaleDateString()){
+          resetTokens(slug)
+        }
         setSelectedCompany(item.data());
       });
+
   };
 
   const buyToken = async () => {
