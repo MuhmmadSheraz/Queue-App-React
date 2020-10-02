@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   firebase,
   user,
-  cancelToken,
+  updateCancelledTokens,
   unsubscribeBuyers,
 } from "../../config/firebase";
 import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
@@ -14,9 +14,7 @@ import "./myTokens.css";
 const MyTokens = (props) => {
   const [myTokens, setMyTokens] = useState([]);
   let userId;
-  useEffect(() => {
-    console.log(props.userInfo.userId);
-  }, []);
+  
 
   const { ref: heading } = useWebAnimations({
     ...shakeY,
@@ -26,13 +24,13 @@ const MyTokens = (props) => {
       iterations: Infinity,
     },
   });
-  const getMyToken =  () => {
+  const getMyToken = () => {
     firebase
-    .firestore()
-    .collection("buyers")
-    .where("buyerId", "==", props.userInfo.userId)
-    .onSnapshot((data) => {
-      let arr = [];
+      .firestore()
+      .collection("buyers")
+      .where("buyerId", "==", props.userInfo.userId)
+      .onSnapshot((data) => {
+        let arr = [];
         data.forEach((x) => {
           let temp = x.data();
           temp.id = x.id;
@@ -42,15 +40,15 @@ const MyTokens = (props) => {
       });
   };
   useEffect(() => {
-    getMyToken()
+    getMyToken();
     return () => {
       unsubscribeBuyers();
     };
   }, []);
-  const cancel = (param) => {
-    return firebase.firestore().collection("buyers").doc(param).delete();
+  const cancel = async (docId, compId, totalToken, myToken) => {
+    firebase.firestore().collection("buyers").doc(docId).delete();
+    await updateCancelledTokens(docId, compId, totalToken, myToken);
   };
-
   return (
     <div className="custom-shape-divider-top-1600808309">
       <svg
@@ -97,7 +95,14 @@ const MyTokens = (props) => {
                       <div className="compToken"> {x.tokenNumber}</div>
                       <div
                         className="btn btn-outline-danger"
-                        onClick={() => cancel(x.id)}
+                        onClick={() =>
+                          cancel(
+                            x.id,
+                            x.companyId,
+                            x.totalTokens,
+                            x.tokenNumber
+                          )
+                        }
                       >
                         Cancel Token
                       </div>

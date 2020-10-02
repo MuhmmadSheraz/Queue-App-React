@@ -8,24 +8,23 @@ import {
   Col,
   Button,
 } from "react-bootstrap";
+import Swal from "sweetalert2";
+
 import { Link } from "react-router-dom";
 import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
 import { connect } from "react-redux";
 import {
   getAllCompanies,
   unsubscribe,
-  user,
-  addRandomCompanies,
+  searchFromDB,
 } from "../../config/firebase";
 const GetAllCompanies = (props) => {
   const [limit, setLimit] = useState(10);
   let loading = false;
   const [companies, setCompanies] = useState([]);
-  // const [limit, setLimit] = useState(7);
   const array1 = [];
   const allCompanies = async (param) => {
     loading = true;
-
     const result = await getAllCompanies(param);
     result.forEach((x) => {
       array1.push(x.data());
@@ -35,12 +34,6 @@ const GetAllCompanies = (props) => {
     loading = false;
   };
 
-  // useEffect(() => {
-
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, []);
   const { ref: heading } = useWebAnimations({
     ...shakeY,
     timing: {
@@ -49,22 +42,27 @@ const GetAllCompanies = (props) => {
       iterations: Infinity,
     },
   });
-  const searchCompany = (e) => {
+  const searchCompany = async (e) => {
     const entry = e.target.value;
     if (e.key === "Enter") {
-      if (entry == "") {
-        return setCompanies(props.getCompanyList.companyList);
-      }
-      setCompanies((prev) => {
-        return prev.filter((x) => x.companyName == entry);
+      let companyData = await searchFromDB(entry);
+      let array1 = [];
+      companyData.forEach((x) => {
+        console.log(x.data());
+        array1.push(x.data());
       });
+
+      if (!array1.length) {
+        return Swal.fire({
+          icon: "warning",
+          text: "No Company Found !",
+        });
+      } else {
+        setCompanies(array1);
+      }
     }
   };
-  const random = () => {
-    for (let i = 0; i < 100; i++) {
-      addRandomCompanies(`Comapny==> ${i}`);
-    }
-  };
+
   useEffect(() => {
     // random();
     document.addEventListener("scroll", trackScrolling);
@@ -83,18 +81,18 @@ const GetAllCompanies = (props) => {
   }, [limit]);
 
   const isBottom = (el) => {
-    return el.getBoundingClientRect().bottom <= window.innerHeight+10;
+    return el.getBoundingClientRect().bottom <= window.innerHeight + 10;
   };
 
   const trackScrolling = () => {
     const wrappedElement = document.getElementById("header");
     if (isBottom(wrappedElement) && !loading) {
       document.removeEventListener("scroll", trackScrolling);
-      setLimit(limit+10)
+      setLimit(limit + 10);
     }
   };
   return (
-    <div className="custom-shape-divider-top-1600808309"id="header">
+    <div className="custom-shape-divider-top-1600808309" id="header">
       <svg
         data-name="Layer 1"
         xmlns="http://www.w3.org/2000/svg"
@@ -118,6 +116,7 @@ const GetAllCompanies = (props) => {
               aria-describedby="inputGroup-sizing-default"
               placeholder="Search Company"
               onKeyDown={searchCompany}
+              required="required"
             />
           </InputGroup>
         </div>
@@ -126,7 +125,7 @@ const GetAllCompanies = (props) => {
         <Row>
           <Container>
             {companies &&
-              companies.map((x,index) => {
+              companies.map((x, index) => {
                 return (
                   <Col md="12" key={index}>
                     <div className="columnMain">
@@ -144,9 +143,10 @@ const GetAllCompanies = (props) => {
     </div>
   );
 };
-const mapSateToProps = (state) => {
-  return {
-    getCompanyList: state.companyReducer,
-  };
-};
-export default connect(mapSateToProps, null)(GetAllCompanies);
+// const mapSateToProps = (state) => {
+//   return {
+//     getCompanyList: state.companyReducer,
+//   };
+// };
+// export default connect(mapSateToProps, null)(GetAllCompanies);
+export default GetAllCompanies;

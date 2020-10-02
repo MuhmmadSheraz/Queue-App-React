@@ -25,7 +25,7 @@ const Buyers = () => {
       <div className="buyersContent">
         <span className="pt-5">
           <h1 className="text-center text-dark py-5 heading">Queue App</h1>
-          <h1 className="text-center compheading">*** Add Company ***</h1>
+          <h1 className="text-center compheading">*** My Buyers***</h1>
         </span>
         <Container>
           <Row>

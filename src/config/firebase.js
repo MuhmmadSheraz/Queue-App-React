@@ -33,7 +33,6 @@ const login = () => {
 };
 const signUp = (signUpObj) => {
   const { signUpEmail, signUpPassword } = signUpObj;
-  console.log(signUpEmail, signUpPassword);
   return firebase
     .auth()
     .createUserWithEmailAndPassword(signUpEmail, signUpPassword);
@@ -170,7 +169,6 @@ const purchaseToken = (tokenObj) => {
     });
 };
 const updateTokens = (id, currTokens) => {
-  console.log("Token Updated");
   return firebase
     .firestore()
     .collection("companyList")
@@ -180,7 +178,6 @@ const updateTokens = (id, currTokens) => {
     });
 };
 const seeBuyers = (id) => {
-  console.log(id);
   return firebase
     .firestore()
     .collection("buyers")
@@ -196,17 +193,37 @@ const seeBuyers = (id) => {
 //   .get();
 // };
 const cancelToken = (doc) => {
-  console.log("Token Cancel From Db", doc);
   return firebase.firestore().collection("buyers").doc(doc).delete();
 };
-const addRandomCompanies = (name) => {
-  console.log(name);
-  return firebase.firestore().collection("companyList").add({
-    companyName: name,
-  });
+const searchFromDB = (param) => {
+  return firebase
+    .firestore()
+    .collection("companyList")
+    .where("companyName", "==", param)
+    .get();
+};
+const updateCancelledTokens = (docId, compId, totalToken, myToken) => {
+  let revertToken = 0;
+  return firebase
+    .firestore()
+    .collection("companyList")
+    .doc(compId)
+    .get()
+    .then((x) => {
+      
+      revertToken = x.data().currentTokens;
+      firebase
+        .firestore()
+        .collection("companyList")
+        .doc(compId)
+        .update({
+          currentTokens: revertToken - 1,
+        })
+    });
 };
 export {
-  addRandomCompanies,
+  updateCancelledTokens,
+  searchFromDB,
   unsubscribeBuyers,
   cancelToken,
   resetTokensForAll,
