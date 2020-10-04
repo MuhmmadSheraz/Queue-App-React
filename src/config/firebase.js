@@ -184,14 +184,7 @@ const seeBuyers = (id) => {
     .where("companyId", "==", id)
     .get();
 };
-// const getMyTokens = (doc) => {
-// console.log(doc);
-// return firebase
-//   .firestore()
-//   .collection("buyers")
-//   .where("buyerId", "==", doc)
-//   .get();
-// };
+
 const cancelToken = (doc) => {
   return firebase.firestore().collection("buyers").doc(doc).delete();
 };
@@ -210,7 +203,6 @@ const updateCancelledTokens = (docId, compId, totalToken, myToken) => {
     .doc(compId)
     .get()
     .then((x) => {
-      
       revertToken = x.data().currentTokens;
       firebase
         .firestore()
@@ -218,8 +210,25 @@ const updateCancelledTokens = (docId, compId, totalToken, myToken) => {
         .doc(compId)
         .update({
           currentTokens: revertToken - 1,
-        })
+        });
     });
+};
+export const initializeFirebase = () => {
+  firebase.initializeApp({
+    messagingSenderId: "938993197648",
+  });
+};
+export const askForPermissioToReceiveNotifications = async () => {
+  try {
+    const messaging = firebase.messaging();
+    await messaging.requestPermission();
+    const token = await messaging.getToken();
+    console.log("Token===>", token);
+
+    return token;
+  } catch (error) {
+    console.error(error);
+  }
 };
 export {
   updateCancelledTokens,

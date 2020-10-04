@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { logOut, firebase } from "../../config/firebase";
+import { logOut, firebase,askForPermissioToReceiveNotifications } from "../../config/firebase";
 import { useHistory, Link } from "react-router-dom";
 import { removeUser } from "../../Store/actions/authAction";
 import "./homepage.css";
@@ -9,6 +9,7 @@ import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
 import { companyActionNull } from "../../Store/actions/companyAction";
 import peopleQueue from "../../assets/peopleWaiting.jpg";
+// import {askForPermissioToReceiveNotifications} from "../../push-notification"
 import useWebAnimations, {
   shakeY,
   wobble,
@@ -88,6 +89,7 @@ const Homepage = (props) => {
               >
                 Logout
               </Button>
+              <Button onClick={askForPermissioToReceiveNotifications}>Push Notification</Button>
 
               {/* <button onClick={props.removeAll()}>Remove All</button> */}
             </div>
