@@ -32,12 +32,14 @@ function App() {
   // const getMap = (paramMap) => {
   //   console.log("from App", paramMap);
   // };
-  const a1 = "hello";
+const a1="hello"
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <RouterNav isLoggedIn={isLoggedIn} loader={loader}>
+          
           <div className="App">
+
             {/* <MyMapComponent  /> */}
             <Login />
             <Homepage />

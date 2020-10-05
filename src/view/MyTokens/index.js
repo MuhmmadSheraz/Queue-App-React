@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col,Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
   firebase,
@@ -14,7 +14,6 @@ import "./myTokens.css";
 const MyTokens = (props) => {
   const [myTokens, setMyTokens] = useState([]);
   let userId;
-  
 
   const { ref: heading } = useWebAnimations({
     ...shakeY,
@@ -45,6 +44,38 @@ const MyTokens = (props) => {
       unsubscribeBuyers();
     };
   }, []);
+  const showNotification = () => {
+    const message = new Notification("Your Turned", {
+      icon:
+        "https://upload-icon.s3.us-east-2.amazonaws.com/uploads/icons/png/7365665041556281661-512.png",
+      body: "Be Ready In 5  mins",
+    });
+    message.onclick = () => {
+      message.close();
+      window.parent.focus();
+    };
+  };
+  const array2=[1,2,4,8]
+  useEffect(() => {
+    for (let i = 0; i < 10;i++) {
+      if(array2.includes(i)){
+        startNotifying(i)
+      }
+      else{
+        pauseNotifying(i)
+      }
+    }
+  }, []);
+  const startNotifying=(i)=>{
+    setTimeout(()=>{
+      showNotification();
+    },5000*i)
+  }
+  const pauseNotifying=(i)=>{
+    setTimeout(()=>{
+      return ""
+    },5000*i)
+  }
   const cancel = async (docId, compId, totalToken, myToken) => {
     firebase.firestore().collection("buyers").doc(docId).delete();
     await updateCancelledTokens(docId, compId, totalToken, myToken);
@@ -67,6 +98,7 @@ const MyTokens = (props) => {
           Queue App
         </p>
         <h1 className="text-center text-light compheading">*** My Tokens***</h1>
+        <Button onClick={showNotification}>What seenz</Button>
       </Container>
       <div className="content">
         <Row>

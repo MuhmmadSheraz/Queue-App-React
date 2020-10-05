@@ -9,7 +9,6 @@
 
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
-import firebase from 'firebase';
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -139,15 +138,4 @@ export function unregister() {
         console.error(error.message);
       });
   }
-}
-export const initializeFirebase = () => {
-  firebase.initializeApp({
-    messagingSenderId:"938993197648"
-  });
-  
-navigator.serviceWorker
-    .register('/my-sw.js')
-    .then((registration) => {
-      firebase.messaging().useServiceWorker(registration);
-    });
 }

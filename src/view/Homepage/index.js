@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { logOut, firebase,askForPermissioToReceiveNotifications } from "../../config/firebase";
+import { logOut, firebase } from "../../config/firebase";
 import { useHistory, Link } from "react-router-dom";
 import { removeUser } from "../../Store/actions/authAction";
 import "./homepage.css";
@@ -9,7 +9,6 @@ import MyMapComponent from "../../component/Map";
 import { connect } from "react-redux";
 import { companyActionNull } from "../../Store/actions/companyAction";
 import peopleQueue from "../../assets/peopleWaiting.jpg";
-// import {askForPermissioToReceiveNotifications} from "../../push-notification"
 import useWebAnimations, {
   shakeY,
   wobble,
@@ -51,6 +50,25 @@ const Homepage = (props) => {
     logOut();
     props.loggedOutUser();
   };
+  const showNotification = () => {
+    const message = new Notification("Your Turned", {
+      icon:
+        "https://upload-icon.s3.us-east-2.amazonaws.com/uploads/icons/png/7365665041556281661-512.png",
+      body: "Be Ready In 5  mins",
+    });
+    message.onclick = () => {
+      message.close();
+      window.parent.focus();
+    };
+  };
+  //   let permission = Notification.permission;
+  //   if (permission === "granted") {
+  // showNotification()  } else if (permission !== "denied") {
+  //     Notification.requestPermission().then((res) => {
+  //       if (res === "granted") {
+  //     showNotification()      }
+  //     });
+  //   }
 
   return (
     <div className="homeWrapper">
@@ -89,8 +107,7 @@ const Homepage = (props) => {
               >
                 Logout
               </Button>
-              <Button onClick={askForPermissioToReceiveNotifications}>Push Notification</Button>
-
+{/* <button onclick={showNotification}>Notify</button> */}
               {/* <button onClick={props.removeAll()}>Remove All</button> */}
             </div>
           </div>
