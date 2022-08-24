@@ -12,13 +12,6 @@
   font-size: 25px;
 }
 
-.companyList {
-  color: black;
-  margin: 5px;
-  background-color: white;
-  border: 1px solid #007bff;
-  padding: 10px 15px;
-}
 
 
 
@@ -26,9 +19,7 @@
   color: #4884dc !important;
   font-size: 75px;
 }
-.tokenBuyer{
-  /* float: right !important; */
-}
+
 .profile{
   height: 100px;
 }

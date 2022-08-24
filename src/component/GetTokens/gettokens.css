@@ -26,10 +26,11 @@ padding-bottom: 20px;
   font-size: 75px;
 }
 .card {
-  height: 550px;
+  min-height: max-content;
   border: 0px;
-  width: 350px;
+  width: 500px;
   border-radius: 20px;
+  padding-bottom: 20px;
 }
 .cardWrapperTokens {
   text-align: center;

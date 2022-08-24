@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Container } from "react-bootstrap";
-import { connect } from "react-redux";
-import { addUser, removeUser } from "../../Store/actions/authAction";
+import React, { useState, useEffect } from 'react'
+import { Row, Col, Button, Container } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { addUser, removeUser } from '../../Store/actions/authAction'
 import {
   addCompaniesFromDB,
   realTime,
   removeCompany,
-} from "../../Store/actions/companyAction";
+} from '../../Store/actions/companyAction'
 import {
   firebase,
   logOut,
   getAllCompanies,
   getId,
   delete_company,
-} from "../../config/firebase";
-import { useHistory } from "react-router-dom";
-import AddCompanyForm from "../../component/AddCompanyForm";
-import { Link } from "react-router-dom";
-import "./company.css";
+} from '../../config/firebase'
+import { useHistory } from 'react-router-dom'
+import AddCompanyForm from '../../component/AddCompanyForm'
+import { Link } from 'react-router-dom'
+import './company.css'
 import useWebAnimations, {
   shakeY,
   wobble,
   backInDown,
-} from "@wellyshen/use-web-animations";
+} from '@wellyshen/use-web-animations'
 
 const Company = (props, getMap) => {
   const { ref: heading } = useWebAnimations({
@@ -32,57 +32,57 @@ const Company = (props, getMap) => {
       duration: 1000 * 20,
       iterations: Infinity,
     },
-  });
-  const companyListArray = props && props.allCompanies;
-  const [showForm, setShowForm] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
-  const history = useHistory();
+  })
+  const companyListArray = props && props.allCompanies
+  const [showForm, setShowForm] = useState(false)
+  const [showDetail, setShowDetail] = useState(false)
+  const history = useHistory()
 
   const getCompanies = async () => {
-    const companies = await getAllCompanies();
-    const companyList = [];
+    const companies = await getAllCompanies()
+    const companyList = []
     companies.forEach((x) => {
-      companyList.push(x.data());
-    });
-    props.addDataToDB(companyList);
-  };
+      companyList.push(x.data())
+    })
+    props.addDataToDB(companyList)
+  }
   const remove_Company = async (id) => {
-    delete_company(id);
-  };
+    delete_company(id)
+  }
   useEffect(() => {
     if (companyListArray === undefined) {
-      getCompanies();
+      getCompanies()
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    userStatus();
-    props.getRealData();
-  }, []);
+    userStatus()
+    props.getRealData()
+  }, [])
 
   let userStatus = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user || props.user) {
       } else {
-        history.push("/");
-        props.isLoggedIn(null);
+        history.push('/')
+        props.isLoggedIn(null)
       }
-    });
-  };
+    })
+  }
   const showFormBtn = () => {
     if (showForm) {
-      setShowForm(false);
+      setShowForm(false)
     } else {
-      setShowForm(true);
+      setShowForm(true)
     }
-  };
+  }
   const showDetails = () => {
     if (showDetail) {
-      setShowDetail(false);
+      setShowDetail(false)
     } else {
-      setShowDetail(true);
+      setShowDetail(true)
     }
-  };
+  }
 
   return (
     <div className="companyWrapper">
@@ -96,13 +96,13 @@ const Company = (props, getMap) => {
 
         {props.allCompanies && (
           <Container>
-            <Row>
+            <div>
               {companyListArray.map((x, index) => {
                 if (x.userId === props.user.userId) {
                   return (
-                    <Col md="12" className="companyList" key={index}>
-                      {x.companyName}
-                      <span className="allBtns">
+                    <div className="companyList" key={index}>
+                      <h4>{x.companyName}</h4>
+                      <div className="actionButton_Wrap">
                         <Link to={`/company/${x.companyId}`}>
                           <Button
                             variant="btn btn-outline-success"
@@ -111,36 +111,36 @@ const Company = (props, getMap) => {
                             Detail
                           </Button>
                         </Link>
-                      </span>
-                      <button
-                        className="delBtn float-right"
-                        onClick={() => remove_Company(x.companyId)}
-                      >
-                        X
-                      </button>
-                    </Col>
-                  );
+                        <button
+                          className="delBtn"
+                          onClick={() => remove_Company(x.companyId)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    </div>
+                  )
                 }
               })}
-            </Row>
+            </div>
           </Container>
         )}
 
-        {showForm ? <AddCompanyForm /> : ""}
+        {showForm ? <AddCompanyForm /> : ''}
       </div>
 
       <button className="floatBtn btn-primary" onClick={showFormBtn}>
         +
       </button>
     </div>
-  );
-};
+  )
+}
 const mapStateToProps = (state) => {
   return {
     user: state.authReducer.user,
     allCompanies: state.companyReducer.companyList,
-  };
-};
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     isLoggedIn: (user) => dispatch(addUser(user)),
@@ -148,6 +148,6 @@ const mapDispatchToProps = (dispatch) => {
     addDataToDB: (data) => dispatch(addCompaniesFromDB(data)),
     getRealData: () => dispatch(realTime()),
     deleteCompany: (data) => dispatch(removeCompany(data)),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Company);
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Company)

@@ -1,49 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Card, Button, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import { FaCoins } from "react-icons/fa";
-import { BiTimer, BiInfinite } from "react-icons/bi";
-import { BiCoinStack } from "react-icons/bi";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Modal, Card, Button, Row, Col } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
+import { FaCoins } from 'react-icons/fa'
+import { BiTimer, BiInfinite } from 'react-icons/bi'
+import { BiCoinStack } from 'react-icons/bi'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import {
   getId,
   updateDailyDetails,
   resetTokens,
   getCompanyData,
   seeBuyers,
-} from "../../config/firebase";
-import "./companyDetails.css";
-import { realTime } from "../../Store/actions/companyAction";
-import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
+} from '../../config/firebase'
+import './companyDetails.css'
+import { realTime } from '../../Store/actions/companyAction'
+import useWebAnimations, { shakeY } from '@wellyshen/use-web-animations'
 
 const CompanyDeatils = (props) => {
-  const [addTokens, setAddTokens] = useState("");
-  const [addTime, setTime] = useState("");
-  const [buyers, setBuyers] = useState([]);
-  const { id } = useParams();
-  const allCompanies = props && props.company;
-  const selectedCompany = allCompanies.filter((x) => x.companyId === id);
-  const name = selectedCompany[0].companyName;
-  console.log(id)
-  
+  const [addTokens, setAddTokens] = useState('')
+  const [addTime, setTime] = useState('')
+  const [buyers, setBuyers] = useState([])
+  const { id } = useParams()
+  const allCompanies = props && props.company
+  const selectedCompany = allCompanies.filter((x) => x.companyId === id)
+  const name = selectedCompany[0].companyName
+
   useEffect(() => {
-    props.getRealData();
-    resetToken();
-  }, []);
+    props.getRealData()
+    resetToken()
+  }, [])
   const resetToken = async () => {
-    const data = await getCompanyData(id);
-    const prevDate = await data.data().createdOn;
+    const data = await getCompanyData(id)
+    const prevDate = await data.data().createdOn
     if (new Date().toLocaleDateString() !== prevDate) {
-      resetTokens(id);
+      resetTokens(id)
     }
-  };
+  }
   const updateDetails = async (name) => {
-    let date = new Date().toLocaleDateString();
-    await updateDailyDetails(id, addTokens, addTime, date);
-    props.getRealData();
-  };
-  const { keyframes, timing } = shakeY;
+    let date = new Date().toLocaleDateString()
+    await updateDailyDetails(id, addTokens, addTime, date)
+    props.getRealData()
+  }
+  const { keyframes, timing } = shakeY
   const { ref } = useWebAnimations({
     keyframes,
     timing: {
@@ -52,7 +51,7 @@ const CompanyDeatils = (props) => {
       iterations: Infinity,
       duration: timing.duration * 10.75,
     },
-  });
+  })
   return (
     <div className="mainWrapper">
       <span className="pt-5">
@@ -69,13 +68,11 @@ const CompanyDeatils = (props) => {
                 <p className="my-1">Address : {selectedCompany[0].address} </p>
                 <p className="my-1">Since : {selectedCompany[0].since}</p>
                 <p className="my-1">
-                  Timing : {selectedCompany[0].timingFrom} AM to{" "}
+                  Timing : {selectedCompany[0].timingFrom} AM to{' '}
                   {selectedCompany[0].timingTo} PM
                 </p>
                 <Link to={`buyers/${selectedCompany[0].companyId}`}>
-                  <button className="addTokenBtn mt-2">
-                    See Buyers
-                  </button>
+                  <button className="addTokenBtn mt-2">See Buyers</button>
                 </Link>
               </div>
             </Col>
@@ -88,18 +85,20 @@ const CompanyDeatils = (props) => {
                 </span>
               </div>
               <input
+                type="number"
                 placeholder="Enter Tokens"
                 className="tokenInp my-3"
                 onChange={(e) => {
-                  setAddTokens(e.target.value);
+                  setAddTokens(e.target.value)
                 }}
               />
 
               <input
-                placeholder="Enter Time For Each Turn"
+                type="number"
+                placeholder="Enter Time For Each Turn in Minutes  "
                 className="tokenInp my-3"
                 onChange={(e) => {
-                  setTime(e.target.value);
+                  setTime(e.target.value)
                 }}
               />
 
@@ -111,21 +110,19 @@ const CompanyDeatils = (props) => {
               </button>
             </Col>
           </Row>
-         
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 const mapStateToProps = (state) => {
-  console.log("state from companyDetails", state);
   return {
     company: state.companyReducer.companyList,
-  };
-};
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     getRealData: () => dispatch(realTime()),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CompanyDeatils);
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CompanyDeatils)

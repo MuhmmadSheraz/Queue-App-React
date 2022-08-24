@@ -1,63 +1,61 @@
-import * as firebase from "firebase";
-import React from "react";
+import * as firebase from 'firebase'
+import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
   Redirect,
-} from "react-router-dom";
+} from 'react-router-dom'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBrPwxFtj9z9XFi0gpmGDrwWPdzwgdxE1w",
-  authDomain: "queue-app-80606.firebaseapp.com",
-  databaseURL: "https://queue-app-80606.firebaseio.com",
-  projectId: "queue-app-80606",
-  storageBucket: "queue-app-80606.appspot.com",
-  messagingSenderId: "938993197648",
-  appId: "1:938993197648:web:a48d965063c8026f622755",
-  measurementId: "G-VVLKDSGQ1E",
-};
+  apiKey: 'AIzaSyBrPwxFtj9z9XFi0gpmGDrwWPdzwgdxE1w',
+  authDomain: 'queue-app-80606.firebaseapp.com',
+  databaseURL: 'https://queue-app-80606.firebaseio.com',
+  projectId: 'queue-app-80606',
+  storageBucket: 'queue-app-80606.appspot.com',
+  messagingSenderId: '938993197648',
+  appId: '1:938993197648:web:a48d965063c8026f622755',
+  measurementId: 'G-VVLKDSGQ1E',
+}
 
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
+firebase.initializeApp(firebaseConfig)
+const storage = firebase.storage()
 
 const login = () => {
-  const provider = new firebase.auth.FacebookAuthProvider();
-  firebase.auth().languageCode = "fr_FR";
+  const provider = new firebase.auth.FacebookAuthProvider()
+  firebase.auth().languageCode = 'fr_FR'
 
   provider.setCustomParameters({
-    display: "popup",
-  });
-  return firebase.auth().signInWithPopup(provider);
-};
+    display: 'popup',
+  })
+  return firebase.auth().signInWithPopup(provider)
+}
 const signUp = (signUpObj) => {
-  const { signUpEmail, signUpPassword } = signUpObj;
+  const { signUpEmail, signUpPassword } = signUpObj
   return firebase
     .auth()
-    .createUserWithEmailAndPassword(signUpEmail, signUpPassword);
-};
+    .createUserWithEmailAndPassword(signUpEmail, signUpPassword)
+}
 const normalSignIn = (signInDetails) => {
-  const { SignInemail, SignInpassword } = signInDetails;
-  return firebase
-    .auth()
-    .signInWithEmailAndPassword(SignInemail, SignInpassword);
-};
+  const { SignInemail, SignInpassword } = signInDetails
+  return firebase.auth().signInWithEmailAndPassword(SignInemail, SignInpassword)
+}
 const logOut = () => {
-  return firebase.auth().signOut();
-};
+  return firebase.auth().signOut()
+}
 
 const addUserToFirebase = (uid, email, userName) => {
-  firebase.firestore().collection("user").doc(uid).set({
+  firebase.firestore().collection('user').doc(uid).set({
     userId: uid,
     userEmail: email,
     userName: userName,
-  });
-};
+  })
+}
 const addCompanyToFirebase = (companyListInstance, marker, image) => {
-  let ref = firebase.firestore().collection("companyList").doc();
-  const id = ref.id;
-  if (image === "") {
+  let ref = firebase.firestore().collection('companyList').doc()
+  const id = ref.id
+  if (image === '') {
     ref.set({
       companyName: companyListInstance.companyName,
       userId: companyListInstance.userId,
@@ -67,18 +65,18 @@ const addCompanyToFirebase = (companyListInstance, marker, image) => {
       address: companyListInstance.address,
       companyId: id,
       axis: marker,
-    });
-  } else if (image != "") {
-    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    })
+  } else if (image != '') {
+    const uploadTask = storage.ref(`images/${image.name}`).put(image)
     uploadTask.on(
-      "state_changed",
+      'state_changed',
       (snapshot) => {},
       (error) => {
-        console.log(error);
+        console.log(error)
       },
       () => {
         storage
-          .ref("images")
+          .ref('images')
           .child(image.name)
           .getDownloadURL()
           .then((url) => {
@@ -92,67 +90,67 @@ const addCompanyToFirebase = (companyListInstance, marker, image) => {
               companyId: id,
               axis: marker,
               image: url,
-            });
-          });
+            })
+          })
       }
-    );
+    )
   }
-};
+}
 const currentUser = () => {
-  return firebase.auth().onAuthStateChanged();
-};
+  return firebase.auth().onAuthStateChanged()
+}
 const user = () => {
-  return firebase.auth().currentUser;
-};
+  return firebase.auth().currentUser
+}
 const getAllCompanies = (limit) => {
   if (limit)
-    return firebase.firestore().collection("companyList").limit(limit).get();
-  return firebase.firestore().collection("companyList").get();
-};
+    return firebase.firestore().collection('companyList').limit(limit).get()
+  return firebase.firestore().collection('companyList').get()
+}
 
 const getCompanyData = (compId) => {
-  return firebase.firestore().collection("companyList").doc(compId).get();
-};
+  return firebase.firestore().collection('companyList').doc(compId).get()
+}
 const updateDailyDetails = (docId, addTokens, addTime, date) => {
-  firebase.firestore().collection("companyList").doc(docId).update({
+  firebase.firestore().collection('companyList').doc(docId).update({
     timeTurned: addTime,
     totalTokens: addTokens,
     createdOn: date,
     currentTokens: 1,
-  });
-};
+  })
+}
 const resetTokens = (docId) => {
-  firebase.firestore().collection("companyList").doc(docId).update({
+  firebase.firestore().collection('companyList').doc(docId).update({
     totalTokens: 0,
-  });
-};
+  })
+}
 const resetTokensForAll = () => {
-  firebase.firestore().collection("companyList").update({
+  firebase.firestore().collection('companyList').update({
     totalTokens: 0,
-  });
-};
+  })
+}
 
 const delete_company = (param) => {
-  return firebase.firestore().collection("companyList").doc(param).delete();
-};
+  return firebase.firestore().collection('companyList').doc(param).delete()
+}
 const unsubscribe = firebase
   .firestore()
-  .collection("companyList")
+  .collection('companyList')
   .onSnapshot(function () {
     // Respond to data
     // ...
-  });
+  })
 const unsubscribeBuyers = firebase
   .firestore()
-  .collection("buyers")
+  .collection('buyers')
   .onSnapshot(function () {
     // Respond to data
     // ...
-  });
+  })
 const purchaseToken = (tokenObj) => {
   return firebase
     .firestore()
-    .collection("buyers")
+    .collection('buyers')
     .add({
       companyId: tokenObj.companyId,
       buyerId: tokenObj.buyerId,
@@ -165,62 +163,54 @@ const purchaseToken = (tokenObj) => {
       companyName: tokenObj.companyName,
       companyImage: tokenObj.companyImage
         ? tokenObj.companyImage
-        : "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
-    });
-};
+        : 'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    })
+}
 const updateTokens = (id, currTokens) => {
   return firebase
     .firestore()
-    .collection("companyList")
+    .collection('companyList')
     .doc(id)
     .update({
       currentTokens: currTokens + 1,
-    });
-};
+    })
+}
 const seeBuyers = (id) => {
   return firebase
     .firestore()
-    .collection("buyers")
-    .where("companyId", "==", id)
-    .get();
-};
-// const getMyTokens = (doc) => {
-// console.log(doc);
-// return firebase
-//   .firestore()
-//   .collection("buyers")
-//   .where("buyerId", "==", doc)
-//   .get();
-// };
+    .collection('buyers')
+    .where('companyId', '==', id)
+    .get()
+}
+
 const cancelToken = (doc) => {
-  return firebase.firestore().collection("buyers").doc(doc).delete();
-};
+  return firebase.firestore().collection('buyers').doc(doc).delete()
+}
 const searchFromDB = (param) => {
   return firebase
     .firestore()
-    .collection("companyList")
-    .where("companyName", "==", param)
-    .get();
-};
+    .collection('companyList')
+    .where('companyName', '==', param)
+    .get()
+}
 const updateCancelledTokens = (docId, compId, totalToken, myToken) => {
-  let revertToken = 0;
+  let revertToken = 0
   return firebase
     .firestore()
-    .collection("companyList")
+    .collection('companyList')
     .doc(compId)
     .get()
     .then((x) => {
-      
-      revertToken = x.data().currentTokens;
+      revertToken = x.data().currentTokens
       firebase
         .firestore()
-        .collection("companyList")
+        .collection('companyList')
         .doc(compId)
         .update({
           currentTokens: revertToken - 1,
         })
-    });
-};
+    })
+}
 export {
   updateCancelledTokens,
   searchFromDB,
@@ -246,4 +236,4 @@ export {
   seeBuyers,
   unsubscribe,
   storage,
-};
+}

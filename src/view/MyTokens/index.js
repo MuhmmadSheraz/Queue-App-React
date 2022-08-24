@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col,Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Container, Row, Col, Button } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
 import {
   firebase,
   user,
   updateCancelledTokens,
   unsubscribeBuyers,
-} from "../../config/firebase";
-import useWebAnimations, { shakeY } from "@wellyshen/use-web-animations";
-import { connect } from "react-redux";
-import "./myTokens.css";
+} from '../../config/firebase'
+import useWebAnimations, { shakeY } from '@wellyshen/use-web-animations'
+import { connect } from 'react-redux'
+import './myTokens.css'
 
 const MyTokens = (props) => {
-  const [myTokens, setMyTokens] = useState([]);
-  let userId;
+  const [myTokens, setMyTokens] = useState([])
+  let userId
 
   const { ref: heading } = useWebAnimations({
     ...shakeY,
@@ -22,64 +22,43 @@ const MyTokens = (props) => {
       duration: 1000 * 20,
       iterations: Infinity,
     },
-  });
+  })
   const getMyToken = () => {
     firebase
       .firestore()
-      .collection("buyers")
-      .where("buyerId", "==", props.userInfo.userId)
+      .collection('buyers')
+      .where('buyerId', '==', props.userInfo.userId)
       .onSnapshot((data) => {
-        let arr = [];
+        let arr = []
         data.forEach((x) => {
-          let temp = x.data();
-          temp.id = x.id;
-          arr.push(temp);
-        });
-        setMyTokens(arr);
-      });
-  };
+          let temp = x.data()
+          temp.id = x.id
+          arr.push(temp)
+        })
+        setMyTokens(arr)
+      })
+  }
   useEffect(() => {
-    getMyToken();
+    getMyToken()
     return () => {
-      unsubscribeBuyers();
-    };
-  }, []);
-  const showNotification = () => {
-    const message = new Notification("Your Turned", {
-      icon:
-        "https://upload-icon.s3.us-east-2.amazonaws.com/uploads/icons/png/7365665041556281661-512.png",
-      body: "Be Ready In 5  mins",
-    });
-    message.onclick = () => {
-      message.close();
-      window.parent.focus();
-    };
-  };
-  const array2=[1,2,4,8]
-  useEffect(() => {
-    for (let i = 0; i < 10;i++) {
-      if(array2.includes(i)){
-        startNotifying(i)
-      }
-      else{
-        pauseNotifying(i)
-      }
+      unsubscribeBuyers()
     }
-  }, []);
-  const startNotifying=(i)=>{
-    setTimeout(()=>{
-      showNotification();
-    },5000*i)
+  }, [])
+  const showNotification = () => {
+    const message = new Notification('Your Turned', {
+      icon: 'https://upload-icon.s3.us-east-2.amazonaws.com/uploads/icons/png/7365665041556281661-512.png',
+      body: 'Be Ready In 5  mins',
+    })
+    message.onclick = () => {
+      message.close()
+      window.parent.focus()
+    }
   }
-  const pauseNotifying=(i)=>{
-    setTimeout(()=>{
-      return ""
-    },5000*i)
-  }
+
   const cancel = async (docId, compId, totalToken, myToken) => {
-    firebase.firestore().collection("buyers").doc(docId).delete();
-    await updateCancelledTokens(docId, compId, totalToken, myToken);
-  };
+    firebase.firestore().collection('buyers').doc(docId).delete()
+    await updateCancelledTokens(docId, compId, totalToken, myToken)
+  }
   return (
     <div className="custom-shape-divider-top-1600808309">
       <svg
@@ -98,7 +77,6 @@ const MyTokens = (props) => {
           Queue App
         </p>
         <h1 className="text-center text-light compheading">*** My Tokens***</h1>
-        <Button onClick={showNotification}>What seenz</Button>
       </Container>
       <div className="content">
         <Row>
@@ -112,7 +90,7 @@ const MyTokens = (props) => {
             </Col>
             {myTokens.length > 0 &&
               myTokens.map((x) => {
-                const key = Math.random() * 100;
+                const key = Math.random() * 100
                 return (
                   <Col md="12" key={key}>
                     <div className="columnToken">
@@ -140,17 +118,17 @@ const MyTokens = (props) => {
                       </div>
                     </div>
                   </Col>
-                );
+                )
               })}
           </Container>
         </Row>
       </div>
     </div>
-  );
-};
+  )
+}
 const mapStateToProps = (state) => {
   return {
     userInfo: state.authReducer.user,
-  };
-};
-export default connect(mapStateToProps, null)(MyTokens);
+  }
+}
+export default connect(mapStateToProps, null)(MyTokens)

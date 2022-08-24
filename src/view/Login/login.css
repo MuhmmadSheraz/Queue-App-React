@@ -22,8 +22,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  /* opacity: 0.6; */
   background-color: white;
+  width: 30%;
+  
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
 }
 .heading {
   text-align: center;
@@ -49,6 +54,7 @@
   line-height: 1;
   position: relative;
   border-radius: 5px;
+  width: max-content;
 }
 
 .connect:before {
@@ -87,13 +93,15 @@
   border-radius: 20px;
   outline: none !important;
   border: 1px solid grey !important;
-  margin: 10px;
+  margin: 10px 0px;
+  width: 100%;
 }
 .authBtnLogin {
   border-radius: 20px;
   border: none !important;
   outline: none;
   padding: 10px 20px;
+  display: block;
 }
 .toggleLink {
   color: #4884dc;

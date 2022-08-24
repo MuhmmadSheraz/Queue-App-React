@@ -14,10 +14,12 @@
 
 .companyList {
   color: black;
-  margin: 5px;
-  background-color: white;
   border: 1px solid #007bff;
-  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  width: 100% !important;
 }
 
 .floatBtn {
@@ -33,14 +35,14 @@
   text-align: center;
 }
 .delBtn {
-  margin-right: -100px;
   color: #c9302c;
-  opacity: 0;
+  margin-left: 10px;
   font-size: 20px;
   font-weight: bold;
-  background-color: white;
+  background-color: transparent;
   border: 0px;
   outline: none !important;
+  /* opacity:0 ; */
 }
 .delBtn:hover {
   cursor: pointer;
@@ -49,12 +51,17 @@
   color: #4884dc !important;
   font-size: 75px;
 }
-.companyList:hover .delBtn {
+.actionButton_Wrap{
+  /* display: flex; */
+  /* justify-content: ; */
+  /* align-items: center; */
+  /* background-color: red; */
+  /* width: max-content; */
+}
+/* .companyList:hover .delBtn {
   opacity: 1;
-}
-.allBtns {
-  float: right !important;
-}
+} */
+
 @media (max-width: 539px) {
   .heading {
     font-size: 60px;

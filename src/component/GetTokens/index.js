@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Container, Button } from "react-bootstrap";
-import "./gettokens.css";
-import { BiMap } from "react-icons/bi";
-import { useParams } from "react-router-dom";
-import { realTime, realTime2 } from "../../Store/actions/companyAction";
-import { connect } from "react-redux";
-import { MyMapComponents } from "../../component/Map/index";
+import React, { useEffect, useState } from 'react'
+import { Container, Button } from 'react-bootstrap'
+import './gettokens.css'
+import { BiMap } from 'react-icons/bi'
+import { useParams } from 'react-router-dom'
+import { realTime, realTime2 } from '../../Store/actions/companyAction'
+import { connect } from 'react-redux'
+import { MyMapComponents } from '../../component/Map/index'
 import {
   user,
   purchaseToken,
@@ -14,42 +14,48 @@ import {
   firebase,
   unsubscribe,
   resetTokens,
-} from "../../config/firebase.js";
+} from '../../config/firebase.js'
+import Swal from 'sweetalert2'
+
 const GetTokens = (props) => {
-  const [selectedCompany, setSelectedCompany] = useState("");
-  const [showMap, setShowMap] = useState(false);
-  const [disableBtn, setDisaleBtn] = useState(false);
-  const { slug } = useParams();
+  const [selectedCompany, setSelectedCompany] = useState('')
+  const [showMap, setShowMap] = useState(false)
+  const [disableBtn, setDisaleBtn] = useState(false)
+  const { slug } = useParams()
 
   useEffect(() => {
-    getRealSpecific(slug);
-    
+    getRealSpecific(slug)
+
     return () => {
-      console.log("get Tokens UnMounted");
-      unsubscribe();
-    };
-  }, []);
+      unsubscribe()
+    }
+  }, [])
   const getRealSpecific = (slug) => {
     firebase
       .firestore()
-      .collection("companyList")
+      .collection('companyList')
       .doc(slug)
       .onSnapshot((item) => {
-        console.log(item.data())
-        if(item.data().createdOn  !== new Date().toLocaleDateString()){
+        if (item.data().createdOn !== new Date().toLocaleDateString()) {
           resetTokens(slug)
         }
-        setSelectedCompany(item.data());
-      });
-
-  };
+        setSelectedCompany(item.data())
+      })
+  }
 
   const buyToken = async () => {
-    console.log(selectedCompany);
-    const a = await user();
+    if (
+      Number(selectedCompany.currentTokens) >=
+      Number(selectedCompany.totalTokens)
+    )
+      return Swal.fire({
+        icon: 'warning',
+        text: 'No Tokens Available',
+      })
+    const a = await user()
     let tokenObj = {
-      companyName:selectedCompany.companyName,
-      companyImage:selectedCompany.image,
+      companyName: selectedCompany.companyName,
+      companyImage: selectedCompany.image,
       companyId: slug,
       datePurchase: new Date().toLocaleDateString(),
       tokenNumber: selectedCompany.currentTokens,
@@ -57,10 +63,10 @@ const GetTokens = (props) => {
       buyerName: a.displayName,
       buyerEmail: a.email,
       buyerProfile: a.photoURL,
-    };
-    purchaseToken(tokenObj, slug, selectedCompany.currentTokens);
-    updateTokens(slug, selectedCompany.currentTokens);
-  };
+    }
+    purchaseToken(tokenObj, slug, selectedCompany.currentTokens)
+    updateTokens(slug, selectedCompany.currentTokens)
+  }
   return (
     <div className="custom-shape-divider-top-1600808309">
       <svg
@@ -97,6 +103,10 @@ const GetTokens = (props) => {
             </div>
             <div className="cardBody mt-5 pt-2">
               <h3 className="text-center">{selectedCompany.companyName}</h3>
+              {Number(selectedCompany.currentTokens) >=
+                Number(selectedCompany.totalTokens) && (
+                <h4>No Tokens Available</h4>
+              )}
               {selectedCompany.totalTokens ? (
                 <div className="tokensDetails mt-3">
                   <div className="currentTokens">
@@ -154,22 +164,17 @@ const GetTokens = (props) => {
               >
                 See Address
               </Button>
-              {/* {disableBtn ? (
-                <Button variant="outline-success" onClick={buyToken} disabled>
-                  Purchase Token
-                </Button>
-              ) : ( */}
+
               <Button variant="outline-success" onClick={buyToken}>
                 Purchase Token
               </Button>
-              {/* )} */}
             </div>
           </div>
         </div>
       </Container>
     </div>
-  );
-};
+  )
+}
 // const mapStateToProps = (state) => {
 //   return {
 //     company: state.companyReducer.companyList,
@@ -181,4 +186,4 @@ const GetTokens = (props) => {
 //     getRealData2: (id) => dispatch(realTime2(id)),
 //   };
 // };
-export default connect(null, null)(GetTokens);
+export default connect(null, null)(GetTokens)

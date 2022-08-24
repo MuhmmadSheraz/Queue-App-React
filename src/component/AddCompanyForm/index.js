@@ -1,68 +1,61 @@
-import React, { useState, useEffect } from "react";
-import "./addcompanyform.css";
-import { Modal, Form, Button } from "react-bootstrap";
-import { connect } from "react-redux";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import { MyMapComponent } from "../Map/index";
-import { companyAction } from "../../Store/actions/companyAction";
-import SweetAlert from "sweetalert2-react";
+import React, { useState } from 'react'
+import './addcompanyform.css'
+import { Modal, Form, Button } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import { MyMapComponent } from '../Map/index'
+import { companyAction } from '../../Store/actions/companyAction'
+import SweetAlert from 'sweetalert2-react'
 
-import {
-  addCompanyToFirebase,
-  currentUser,
-  firebase,
-  storage,
-} from "../../config/firebase";
+import { addCompanyToFirebase } from '../../config/firebase'
 const AddCompanyForm = (props) => {
-  const [companyList, setCompanyList] = useState({});
+  const [companyList, setCompanyList] = useState({})
 
-  const [show, setShow] = useState(true);
-  const [getMapData, setMapData] = useState([]);
-  const [marker, setMarker] = useState({ lat: 25.1933895, lng: 66.5949635 });
-  const [addressList, setAddressList] = useState(false);
-  const [image, setImage] = useState("");
+  const [show, setShow] = useState(true)
+  const [getMapData, setMapData] = useState([])
+  const [marker, setMarker] = useState({ lat: 25.1933895, lng: 66.5949635 })
+  const [addressList, setAddressList] = useState(false)
+  const [image, setImage] = useState('')
   const getArea = (area) => {
-    const a = area.response.venues;
+    const a = area.response.venues
     setMarker(
       a.length > 0 && { lat: a[0].location.lat, lng: a[0].location.lng }
-    );
-    setMapData(a);
-    {
-      a.length > 0 && setAddressList(true);
-    }
-  };
+    )
+    setMapData(a)
+    a.length > 0 && setAddressList(true)
+  }
 
   const getImage = (e) => {
-    const img = e.target.files[0];
-    setImage(img);
-  };
+    const img = e.target.files[0]
+    setImage(img)
+  }
   const addFormData = () => {
     if (
-      !companyList.hasOwnProperty("companyName") ||
-      !companyList.hasOwnProperty("since") ||
-      !companyList.hasOwnProperty("timingFrom") ||
-      !companyList.hasOwnProperty("timingTo") ||
-      !companyList.hasOwnProperty("address")
+      !companyList.hasOwnProperty('companyName') ||
+      !companyList.hasOwnProperty('since') ||
+      !companyList.hasOwnProperty('timingFrom') ||
+      !companyList.hasOwnProperty('timingTo') ||
+      !companyList.hasOwnProperty('address')
     ) {
-      return Swal.fire("Oops...", "Please Fill All The Fields!", "warning");
+      return Swal.fire('Oops...', 'Please Fill All The Fields!', 'warning')
     }
-    const userId = props.currentUser.user.userId;
-    companyList.userId = userId;
+    const userId = props.currentUser.user.userId
+    companyList.userId = userId
     // props.addForm((companyList));
-    addCompanyToFirebase(companyList, marker,image);
-    handleClose();
-  };
+    addCompanyToFirebase(companyList, marker, image)
+    handleClose()
+  }
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => setShow(false)
   const getInput = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setCompanyList((preValue) => {
       return {
         ...preValue,
         [name]: value,
-      };
-    });
-  };
+      }
+    })
+  }
 
   return (
     <div>
@@ -74,7 +67,7 @@ const AddCompanyForm = (props) => {
           <Modal.Body>
             <Form
               onSubmit={(e) => {
-                e.preventDefault();
+                e.preventDefault()
               }}
             >
               <Form.Group controlId="formBasicEmail">
@@ -83,7 +76,7 @@ const AddCompanyForm = (props) => {
                   name="companyName"
                   required="required"
                   onChange={(e) => {
-                    getInput(e);
+                    getInput(e)
                   }}
                   type="text"
                   placeholder="Name of Company"
@@ -95,7 +88,7 @@ const AddCompanyForm = (props) => {
                 <Form.Control
                   name="since"
                   onChange={(e) => {
-                    getInput(e);
+                    getInput(e)
                   }}
                   type="number"
                   placeholder="Since"
@@ -114,7 +107,7 @@ const AddCompanyForm = (props) => {
                   <Form.Control
                     name="timingFrom"
                     onChange={(e) => {
-                      getInput(e);
+                      getInput(e)
                     }}
                     type="time"
                     placeholder="Enter Timing"
@@ -123,7 +116,7 @@ const AddCompanyForm = (props) => {
                   <Form.Control
                     name="timingTo"
                     onChange={(e) => {
-                      getInput(e);
+                      getInput(e)
                     }}
                     type="time"
                     placeholder="Enter Timing"
@@ -151,11 +144,11 @@ const AddCompanyForm = (props) => {
                     as="select"
                     custom
                     onChange={(e) => {
-                      getInput(e);
+                      getInput(e)
                     }}
                   >
                     {getMapData.map((x) => {
-                      return <option>{x.name}</option>;
+                      return <option key={x.name}>{x.name}</option>
                     })}
                   </Form.Control>
                 </Form.Group>
@@ -172,22 +165,21 @@ const AddCompanyForm = (props) => {
           </Modal.Footer>
         </Modal>
       ) : (
-        ""
+        ''
       )}
     </div>
-  );
-};
+  )
+}
 const mapStateToProps = (state) => {
-  console.log("state from add form", state);
   return {
     hello: state.companyReducer,
     currentUser: state.authReducer,
-  };
-};
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     addForm: (companyList) => dispatch(companyAction(companyList)),
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddCompanyForm);
+export default connect(mapStateToProps, mapDispatchToProps)(AddCompanyForm)
